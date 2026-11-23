@@ -28,7 +28,7 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await map.screenshot({ ...capture, path: info.outputPath("empty.png") });
   await request.post(mock + "/__control", { data: { populateBeach: true } });
   await page.reload();
-  await expect(scene.locator(".placed-sticker")).toHaveCount(5);
+  await expect(scene.locator(".placed-sticker")).toHaveCount(6);
   await map.screenshot({ ...capture, path: info.outputPath("populated.png") });
   await scene.getByRole("button", { name: "Gazebo", exact: true }).click();
   await expect(scene.locator(".beach-discovery")).toContainText("Na sombra");
@@ -122,7 +122,7 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
           (await (await request.get(mock + "/__state")).json()).placements,
         ).length,
     )
-    .toBe(5);
+    .toBe(6);
   await scene.getByRole("button", { name: "Guardar lugar" }).click();
   await expect(scene.locator(".beach-feedback")).toHaveText("Lugar guardado!");
   const owner = "guest-test-maria";

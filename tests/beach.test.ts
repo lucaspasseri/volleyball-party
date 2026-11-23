@@ -14,6 +14,7 @@ import {
   zoneAt,
   zoneIds,
   zones,
+  type Point,
 } from "../lib/beach";
 
 test("the saved center restores the same feet after panning, zooming and resizing", () => {
@@ -87,12 +88,25 @@ test("a nearby free seat snaps, occupied seats and open sand allow fine placemen
   );
 });
 
+test("four guests can gather at the coolers and the occupied small bench has no snap point", () => {
+  const group: Point[] = [];
+  for (const anchor of zones.coolers.anchors) {
+    const next = suggestSpot("coolers", group);
+    assert.deepEqual(next, { ...anchor, zone_id: "coolers" });
+    assert.deepEqual(nearbyAnchor(anchor, group), anchor);
+    group.push(next);
+  }
+  assert.equal(group.length, 4);
+  const occupiedBench = { x: 168 / 1536, y: 802 / 1024 };
+  assert.equal(nearbyAnchor(occupiedBench, []), undefined);
+});
+
 test("out-of-bounds drops stay on sand and every converted center fits the database", () => {
   for (const x of [-4, 0.32, 0.63, 0.85, 3]) {
     for (const y of [-5, 0.5, 2]) {
       const point = destination({ x, y }, [], true);
       assert.ok(point.y > 0.2 && point.y < 0.95);
-      if (x >= 0.85) assert.ok(point.y > 0.38);
+      if (x >= 0.85) assert.ok(point.y > 0.34);
       for (const sticker of stickerIds)
         assert.ok(
           placementSchema.safeParse(placementAt(point, sticker)).success,

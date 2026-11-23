@@ -83,6 +83,7 @@ async function populateBeach() {
     ["Caio", "capivara", "torcida", 0],
     ["Bia", "surfista", "gazebo", 0],
     ["Davi", "coco", "cadeiras", 0],
+    ["Iara", "salva-vidas", "coolers", 0],
   ] as const;
   for (const [name, sticker, zone, index] of samples) {
     const { x, y } = placementAt(

@@ -47,25 +47,26 @@ export const zones = {
     name: "Coolers",
     line: "Tem gelo aí? A turma da hidratação tá de plantão.",
     width: 0.055,
-    regions: [path([1324, 399], [1493, 402], [1470, 447], [1310, 438])],
-    anchors: path([1386, 427], [1464, 430]),
+    regions: [
+      path([1180, 461], [1331, 431], [1505, 473], [1500, 558], [1240, 564]),
+    ],
+    anchors: path([1292, 502], [1436, 548], [1220, 486], [1334, 552]),
   },
   gazebo: {
     name: "Gazebo",
     line: "Na sombra sempre cabe mais uma cadeira.",
     width: 0.061,
-    regions: [path([995, 372], [1492, 369], [1454, 536], [1004, 512])],
-    anchors: path([1090, 453], [1256, 462], [1364, 490], [1174, 502]),
+    regions: [
+      path([1109, 400], [1195, 349], [1474, 356], [1418, 431], [1108, 438]),
+    ],
+    anchors: path([1160, 403], [1251, 383], [1354, 376], [1304, 425]),
   },
   torcida: {
     name: "Bancos",
     line: "Vale gritar ponto até quando a bola cai fora!",
     width: 0.083,
-    regions: [
-      path([68, 780], [237, 791], [225, 873], [80, 856]),
-      path([228, 832], [613, 856], [601, 949], [229, 919]),
-    ],
-    anchors: path([413, 856], [544, 868], [295, 850], [168, 802]),
+    regions: [path([228, 832], [613, 856], [601, 949], [229, 919])],
+    anchors: path([413, 856], [544, 868], [295, 850]),
   },
   cadeiras: {
     name: "Cadeiras",
@@ -126,9 +127,10 @@ export function placementAt(
 const beachEdge = path(
   [0, 321],
   [900, 223],
-  [934, 224],
-  [977, 396],
-  [1536, 413],
+  [1051, 218],
+  [1108, 394],
+  [1195, 350],
+  [1536, 359],
 );
 const edgeMargin = Math.max(...zoneIds.map((id) => zones[id].width)) / 2;
 export function playable(point: Point): Point {

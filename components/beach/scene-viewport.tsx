@@ -218,7 +218,7 @@ export function SceneViewport({
               draggable={false}
               onLoad={() => setFailed(false)}
               onError={() => setFailed(true)}
-              alt="Praia de Copacabana com duas quadras à esquerda, gazebo listrado à direita, bancos e cadeiras na areia."
+              alt="Praia de Copacabana com duas quadras à esquerda, gazebo branco e coolers à direita. Há banhistas à beira-mar, uma pessoa no banco e outra no calçadão."
             />
           </picture>
           {failed && (
