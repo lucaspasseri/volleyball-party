@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { auth, siteOrigin } from "@/lib/auth/server";
 import { revalidatePath } from "next/cache";
 
 export async function signInWithGoogle(): Promise<{
@@ -8,45 +8,31 @@ export async function signInWithGoogle(): Promise<{
   error?: string;
 }> {
   try {
-    const origin = new URL(process.env.SITE_URL || "http://127.0.0.1:3000")
-      .origin;
-    const db = await createClient();
-    const { data, error } = await db.auth.signInWithOAuth({
+    const origin = siteOrigin();
+    const result = await auth?.signIn.social({
       provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback`,
-        scopes: "openid email profile",
-      },
+      callbackURL: new URL("/auth/callback", origin).href,
+      errorCallbackURL: new URL("/auth/callback?auth_error=1", origin).href,
+      disableRedirect: true,
     });
-    if (error || !data.url)
-      return {
-        error: "O Google não abriu agora. Tente novamente em instantes.",
-      };
-    return { url: data.url };
+    const url = result?.data?.url;
+    if (!result?.error && url) return { url };
+    return { error: "O Google não abriu agora. Tente novamente em instantes." };
   } catch {
-    return {
-      error:
-        "Não foi possível conectar ao Google. Tente novamente em instantes.",
-    };
+    return { error: "Não foi possível conectar ao Google. Tente novamente." };
   }
 }
 
 export async function signOut(): Promise<{ ok: boolean; error?: string }> {
   try {
-    const { error } = await (
-      await createClient()
-    ).auth.signOut({ scope: "local" });
-    if (error)
-      return {
-        ok: false,
-        error: "Não conseguimos encerrar a sessão. Tente de novo.",
-      };
+    const result = await auth?.signOut();
+    if (result?.error || !result) throw new Error("Sign-out failed");
     revalidatePath("/", "layout");
     return { ok: true };
   } catch {
     return {
       ok: false,
-      error: "A conexão deu uma pausa. Tente sair novamente.",
+      error: "Não conseguimos encerrar a sessão. Tente de novo.",
     };
   }
 }

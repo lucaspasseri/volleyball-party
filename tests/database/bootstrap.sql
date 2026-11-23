@@ -1,11 +1,3 @@
--- Standalone PostgreSQL harness only: emulate the small Supabase Auth surface.
--- Use an EMPTY disposable database; never run bootstrap.sql in a Supabase project.
-create role anon nologin;
-create role authenticated nologin;
-create schema auth;
-create table auth.users(id uuid primary key);
-create function auth.uid() returns uuid language sql stable as $$
-  select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
-$$;
-grant usage on schema public, auth to anon, authenticated;
-grant execute on function auth.uid() to anon, authenticated;
+-- This script is used only for the disposable PostgreSQL cluster.
+create role pesca_runtime login;
+create role pesca_untrusted login;

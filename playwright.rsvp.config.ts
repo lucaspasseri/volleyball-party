@@ -5,7 +5,7 @@ export default defineConfig({
   testDir: "./tests/e2e-rsvp",
   workers: 1,
   fullyParallel: false,
-  use: { baseURL: "http://127.0.0.1:3101", trace: "retain-on-failure" },
+  use: { baseURL: "http://localhost:3101", trace: "retain-on-failure" },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     {
@@ -15,20 +15,20 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "node --import tsx tests/fixtures/supabase-server.ts",
+      command: "node --import tsx tests/fixtures/neon-auth-server.ts",
       url: "http://127.0.0.1:54326/health",
       reuseExistingServer: false,
     },
     {
       command: "npm run dev -- --port 3101",
-      url: "http://127.0.0.1:3101",
+      url: "http://localhost:3101",
       reuseExistingServer: false,
       timeout: 120000,
       env: {
         RSVP_TEST_DIST_DIR: ".next-rsvp-test",
-        NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54326",
-        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
-        SITE_URL: "http://127.0.0.1:3101",
+        NEON_AUTH_BASE_URL: "http://127.0.0.1:54326/test/auth",
+        NEON_AUTH_COOKIE_SECRET: "test-cookie-secret-only-for-playwright",
+        SITE_URL: "http://localhost:3101",
       },
     },
   ],

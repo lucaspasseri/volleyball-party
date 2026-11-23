@@ -1,20 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { getGuest } from "@/lib/auth/server";
+import { queryValue } from "@/lib/db";
 import { persistRsvp } from "@/lib/rsvp-mutation";
 import type { MutationResult } from "@/lib/rsvp";
 
 export async function saveRsvp(input: unknown): Promise<MutationResult> {
   const result = await persistRsvp(input, {
-    user: async () => {
-      const db = await createClient();
-      const { data, error } = await db.auth.getUser();
-      return !error && data.user
-        ? { id: data.user.id, avatar: data.user.user_metadata.avatar_url }
-        : null;
-    },
-    save: async (args) => (await createClient()).rpc("save_rsvp", args),
+    user: getGuest,
+    save: (actor, data, code) =>
+      queryValue("select pesca.save_rsvp($1, $2::jsonb, $3) as value", [
+        actor,
+        data,
+        code,
+      ]),
   });
   if (result.ok) {
     revalidatePath("/");

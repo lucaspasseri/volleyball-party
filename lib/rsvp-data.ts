@@ -1,7 +1,8 @@
 import "server-only";
 import { cache } from "react";
-import { createClient } from "@/lib/supabase/server";
-import { supabaseConfig } from "@/lib/supabase/config";
+import { z } from "zod";
+import { auth, getGuest } from "@/lib/auth/server";
+import { databaseConfigured, queryValue } from "@/lib/db";
 import {
   deriveAttendanceState,
   profileSchema,
@@ -11,9 +12,14 @@ import {
   type RsvpView,
 } from "@/lib/rsvp";
 
+const guestResponse = z.object({
+  rsvp: savedRsvpSchema,
+  profile: profileSchema,
+});
+
 export const getRsvpView = cache(async (): Promise<RsvpView> => {
   const view: RsvpView = {
-    configured: Boolean(supabaseConfig()),
+    configured: Boolean(auth) && databaseConfigured(),
     user: null,
     rsvp: null,
     profile: null,
@@ -24,42 +30,26 @@ export const getRsvpView = cache(async (): Promise<RsvpView> => {
   };
   if (!view.configured) return view;
   try {
-    const db = await createClient();
-    const [auth, attendance, settings] = await Promise.all([
-      db.auth.getUser(),
-      db.rpc("public_attendance"),
-      db.rpc("invitation_required"),
+    const [user, attendance, inviteRequired] = await Promise.all([
+      getGuest(),
+      queryValue("select pesca.public_attendance() as value"),
+      queryValue("select pesca.invitation_required() as value"),
     ]);
-    if (attendance.error || settings.error) throw new Error("Read failed");
-    view.attendance = publicAttendanceSchema.parse(attendance.data);
-    view.inviteRequired = settings.data === true;
-    if (auth.error && auth.error.name !== "AuthSessionMissingError")
-      throw new Error("Auth unavailable");
-    const user = auth.data.user;
+    view.attendance = publicAttendanceSchema.parse(attendance);
+    view.inviteRequired = inviteRequired === true;
     if (user) {
       view.user = {
-        name:
-          typeof user.user_metadata.full_name === "string"
-            ? user.user_metadata.full_name.slice(0, 100)
-            : typeof user.user_metadata.name === "string"
-              ? user.user_metadata.name.slice(0, 100)
-              : "",
-        avatarUrl: safeAvatarUrl(user.user_metadata.avatar_url),
+        name: user.name?.slice(0, 100) ?? "",
+        avatarUrl: safeAvatarUrl(user.avatar),
       };
-      const [rsvp, profile, organizer] = await Promise.all([
-        db.from("rsvps").select("*").eq("guest_id", user.id).maybeSingle(),
-        db
-          .from("guest_profiles")
-          .select("full_name,display_name,avatar_url")
-          .eq("id", user.id)
-          .maybeSingle(),
-        db.rpc("is_organizer"),
+      const [response, organizer] = await Promise.all([
+        queryValue("select pesca.guest_response($1) as value", [user.id]),
+        queryValue("select pesca.is_organizer($1) as value", [user.id]),
       ]);
-      if (rsvp.error || profile.error || organizer.error)
-        throw new Error("Read failed");
-      view.rsvp = rsvp.data ? savedRsvpSchema.parse(rsvp.data) : null;
-      view.profile = profile.data ? profileSchema.parse(profile.data) : null;
-      view.organizer = organizer.data === true;
+      const guest = guestResponse.nullable().parse(response);
+      view.rsvp = guest?.rsvp ?? null;
+      view.profile = guest?.profile ?? null;
+      view.organizer = organizer === true;
       view.attendanceState = deriveAttendanceState(true, view.rsvp);
     }
   } catch {
@@ -68,15 +58,3 @@ export const getRsvpView = cache(async (): Promise<RsvpView> => {
   }
   return view;
 });
-
-export async function getAttendanceState() {
-  return (await getRsvpView()).attendanceState;
-}
-
-export async function organizerClient() {
-  const db = await createClient();
-  const { data, error } = await db.auth.getUser();
-  if (error || !data.user) return null;
-  const role = await db.rpc("is_organizer");
-  return !role.error && role.data === true ? db : null;
-}

@@ -9,6 +9,8 @@ import { Expectations } from "@/components/sections/expectations";
 import { Volleyball } from "@/components/illustrations/beach";
 import { event } from "@/lib/event";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {

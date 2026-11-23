@@ -1,4 +1,3 @@
-import { organizerClient } from "@/lib/rsvp-data";
 import { getOrganizerRows } from "@/lib/organizer-data";
 import { attendanceCsv } from "@/lib/organizer";
 
@@ -8,13 +7,13 @@ export async function GET() {
     "X-Content-Type-Options": "nosniff",
   };
   try {
-    const db = await organizerClient();
-    if (!db)
+    const rows = await getOrganizerRows();
+    if (!rows)
       return new Response("Acesso restrito ao organizador.", {
         status: 403,
         headers,
       });
-    return new Response(attendanceCsv(await getOrganizerRows(db)), {
+    return new Response(attendanceCsv(rows), {
       headers: {
         ...headers,
         "Content-Type": "text/csv; charset=utf-8",

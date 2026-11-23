@@ -51,7 +51,7 @@ export type RsvpInput = z.infer<typeof rsvpInputSchema>;
 
 export const savedRsvpSchema = z.object({
   id: z.uuid(),
-  guest_id: z.uuid(),
+  guest_id: z.string().min(1),
   attendance_status: attendanceSchema,
   message: z.string(),
   contribution: z.string(),

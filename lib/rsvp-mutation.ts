@@ -10,8 +10,10 @@ import {
 export type MutationDependencies = {
   user: () => Promise<{ id: string; avatar: unknown } | null>;
   save: (
-    args: Record<string, unknown>,
-  ) => Promise<{ data: unknown; error: unknown }>;
+    actor: string,
+    data: Record<string, unknown>,
+    code: string,
+  ) => Promise<unknown>;
 };
 export async function persistRsvp(
   input: unknown,
@@ -32,24 +34,19 @@ export async function persistRsvp(
         fieldErrors: z.flattenError(parsed.error).fieldErrors,
       };
     const { invite_code, ...values } = parsed.data;
-    // No submitted user ID is ever forwarded. The RPC derives auth.uid() again.
-    const result = await dependencies.save({
-      p_input: { ...values, avatar_url: safeAvatarUrl(user.avatar) },
-      p_invite_code: invite_code,
-    });
-    if (result.error)
-      return {
-        ok: false,
-        message:
-          "Não conseguimos salvar agora. Seus campos continuam aqui; tente de novo.",
-      };
+    // The caller comes from the verified session and is separate from form data.
+    const result = await dependencies.save(
+      user.id,
+      { ...values, avatar_url: safeAvatarUrl(user.avatar) },
+      invite_code,
+    );
     const response = z
       .object({
         ok: z.boolean(),
         code: z.string().optional(),
         rsvp: savedRsvpSchema.optional(),
       })
-      .safeParse(result.data);
+      .safeParse(result);
     if (!response.success)
       return {
         ok: false,
@@ -81,7 +78,7 @@ export async function persistRsvp(
     return {
       ok: false,
       message:
-        "A conexão deu uma pausa. Seus campos continuam aqui; tente de novo.",
+        "Não conseguimos salvar agora. Seus campos continuam aqui; tente de novo.",
     };
   }
 }

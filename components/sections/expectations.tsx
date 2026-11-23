@@ -1,9 +1,14 @@
-import { MousePointer2, Sparkles } from "lucide-react";
-import { BeachScene } from "@/components/illustrations/beach";
+import { Suspense } from "react";
 import { Reveal } from "@/components/motion/reveal";
-import { event } from "@/lib/event";
+import { BeachExperience } from "@/components/beach/beach-experience";
+import { getBeachView } from "@/lib/beach-data";
+import "./beach.css";
 
-// Goal 3: mount the interactive beach, avatar picker and sticker layer here.
+async function PartyMap() {
+  const { identity, ...props } = await getBeachView();
+  return <BeachExperience key={identity + props.canEdit} {...props} />;
+}
+
 export function Expectations() {
   return (
     <section
@@ -12,32 +17,27 @@ export function Expectations() {
       aria-labelledby="expectations-heading"
     >
       <div className="container">
-        <Reveal className="expectations-heading">
-          <p className="eyebrow">UM PEDACINHO DA NOSSA BAGUNÇA</p>
-          <h2 id="expectations-heading">
-            Expectativas<span>✳</span>
-          </h2>
-          <p className="section-lead">{event.copy.expectations}</p>
-        </Reveal>
-        <Reveal className="expectations-scene">
-          <div className="scene-label">
-            <Sparkles size={16} /> PRÉVIA DO QUE VEM POR AÍ
-          </div>
-          <BeachScene variant="preview" />
-          <div className="scene-caption">
-            <MousePointer2 size={24} />
-            <p>
-              Seu lugar na areia está chegando.
-              <span>
-                Em breve, escolha seu avatar e entre nessa praia com a turma.
-              </span>
+        <header className="beach-heading">
+          <div>
+            <p className="beach-kicker">
+              <span aria-hidden="true">✳</span> Expectativas
             </p>
-            <span className="preview-badge">EXPERIÊNCIA EM BREVE</span>
+            <h2 id="expectations-heading">
+              Seu lugar <em>na areia.</em>
+            </h2>
           </div>
-          <span className="scene-handwriting" aria-hidden="true">
-            falta você aqui!
-          </span>
-        </Reveal>
+          <p>
+            Da rede à beira-mar, cada canto tem sua turma. Explore a festa e
+            marque onde a gente vai te encontrar.
+          </p>
+        </header>
+        <Suspense
+          fallback={
+            <div className="beach-loading">Abrindo o mapa da festa…</div>
+          }
+        >
+          <PartyMap />
+        </Suspense>
         <Reveal className="closing-note">
           <span>Sol na pele. Sal no cabelo.</span>
           <strong>Gente querida por perto.</strong>

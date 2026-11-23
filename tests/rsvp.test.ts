@@ -22,7 +22,7 @@ const input: RsvpInput = {
 };
 const saved: SavedRsvp = {
   id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
-  guest_id: "11111111-1111-4111-8111-111111111111",
+  guest_id: "guest-test-maria",
   ...input,
   hidden: false,
   created_at: "2026-11-23T00:00:00Z",
@@ -33,7 +33,7 @@ const dependencies: MutationDependencies = {
     id: saved.guest_id,
     avatar: "https://lh3.googleusercontent.com/photo",
   }),
-  save: async () => ({ error: null, data: { ok: true, rsvp: saved } }),
+  save: async () => ({ ok: true, rsvp: saved }),
 };
 
 test("server mutation requires a verified session before writing", async () => {
@@ -43,7 +43,7 @@ test("server mutation requires a verified session before writing", async () => {
     user: async () => null,
     save: async () => {
       writes++;
-      return { data: null, error: null };
+      return null;
     },
   });
   assert.equal(result.ok, false);
@@ -56,9 +56,10 @@ test("valid save waits for persistence, strips submitted ownership and uses trus
     { ...input, guest_id: "victim", avatar_url: "https://evil.example/photo" },
     {
       ...dependencies,
-      save: async (args) => {
-        sent = args;
-        return { error: null, data: { ok: true, rsvp: saved } };
+      save: async (actor, data, code) => {
+        assert.equal(actor, saved.guest_id);
+        sent = { p_input: data, p_invite_code: code };
+        return { ok: true, rsvp: saved };
       },
     },
   );
@@ -100,7 +101,7 @@ test("validation rejects malformed names, statuses, lengths, companions, contrib
         ...dependencies,
         save: async () => {
           wrote = true;
-          return { data: null, error: null };
+          return null;
         },
       },
     );
@@ -124,8 +125,8 @@ test("upsert responses preserve the existing RSVP identity when editing", async 
     {
       ...dependencies,
       save: async () => ({
-        error: null,
-        data: { ok: true, rsvp: { ...saved, attendance_status: "maybe" } },
+        ok: true,
+        rsvp: { ...saved, attendance_status: "maybe" },
       }),
     },
   );
@@ -134,11 +135,11 @@ test("upsert responses preserve the existing RSVP identity when editing", async 
 });
 test("database/network failures never produce success", async () => {
   for (const save of [
-    async () => ({ error: new Error("offline"), data: null }),
+    async () => null,
     async () => {
       throw new Error("network");
     },
-    async () => ({ error: null, data: { ok: true } }),
+    async () => ({ ok: true }),
   ]) {
     const result = await persistRsvp(input, { ...dependencies, save });
     assert.equal(result.ok, false);
@@ -153,7 +154,7 @@ test("rate limits and invite errors produce friendly Portuguese feedback", async
   ] as const) {
     const result = await persistRsvp(input, {
       ...dependencies,
-      save: async () => ({ error: null, data: { ok: false, code } }),
+      save: async () => ({ ok: false, code }),
     });
     assert.equal(result.ok, false);
     assert.match(result.message, expected);

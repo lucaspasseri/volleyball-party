@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { organizerClient } from "@/lib/rsvp-data";
 import { getOrganizerRows } from "@/lib/organizer-data";
 import { attendanceOptions } from "@/lib/rsvp";
 import { ModerateButton } from "@/components/ui/moderate-button";
@@ -12,8 +11,8 @@ export const dynamic = "force-dynamic";
 export default async function OrganizerPage() {
   let content;
   try {
-    const db = await organizerClient();
-    if (!db)
+    const rows = await getOrganizerRows();
+    if (!rows)
       content = (
         <p>
           Acesso restrito ao organizador. Entre com sua conta Google pelo
@@ -21,7 +20,6 @@ export default async function OrganizerPage() {
         </p>
       );
     else {
-      const rows = await getOrganizerRows(db);
       const going = rows.filter(
         (row) => row.attendance_status === "going" && !row.hidden,
       );

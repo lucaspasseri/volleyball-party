@@ -168,48 +168,77 @@ test("failed persistence preserves fields and pending state waits for the server
   await expect(page.getByText("Seu lugar ao sol tá garantido!")).toBeVisible();
 });
 
-test("proxy refreshes an expired access token and propagates replacement cookies", async ({
+test("revoked Neon session is rejected even with a previously signed session cache", async ({
   page,
+  request,
   context,
 }) => {
   await login(page);
-  const cookie = (await context.cookies()).find((cookie) =>
-    /-auth-token$/.test(cookie.name),
+  expect(
+    (await context.cookies()).some((cookie) =>
+      cookie.name.endsWith(".local.session_data"),
+    ),
+  ).toBe(true);
+  const session = await page.request.get("/api/auth/get-session");
+  expect(session.status()).toBe(200);
+  expect(session.headers()["cache-control"]).toContain("no-store");
+  expect((await page.request.post("/api/auth/admin/list-users")).status()).toBe(
+    404,
   );
-  expect(cookie).toBeTruthy();
-  const session = JSON.parse(
-    Buffer.from(cookie!.value.slice("base64-".length), "base64url").toString(),
+  await control(request, { revokeSessions: true });
+  await page.getByRole("button", { name: "Salvar minha resposta" }).click();
+  await expect(page.locator(".rsvp-feedback")).toContainText(
+    "Sua sessão terminou",
   );
-  const parts = session.access_token.split(".");
-  const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString());
-  payload.exp = Math.floor(Date.now() / 1000) - 3600;
-  parts[1] = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  session.access_token = parts.join(".");
-  session.expires_at = payload.exp;
-  await context.addCookies([
-    {
-      ...cookie!,
-      value:
-        "base64-" + Buffer.from(JSON.stringify(session)).toString("base64url"),
-    },
-  ]);
   const response = await page.reload();
   expect(response?.headers()["cache-control"]).toContain("no-store");
-  await expect(page.getByLabel("Nome", { exact: false }).first()).toHaveValue(
-    "Maria Silva",
-  );
-  const refreshed = (await context.cookies()).find(
-    (entry) => entry.name === cookie!.name,
-  );
-  const refreshedSession = JSON.parse(
-    Buffer.from(
-      refreshed!.value.slice("base64-".length),
-      "base64url",
-    ).toString(),
-  );
-  expect(refreshedSession.expires_at).toBeGreaterThan(
-    Math.floor(Date.now() / 1000),
-  );
+  await expect(
+    page.getByRole("button", { name: "Continuar com Google" }),
+  ).toBeVisible();
+});
+
+test("a second signed-in account cannot view or replace the first account's private response", async ({
+  page,
+  request,
+  browser,
+}) => {
+  await login(page);
+  await page.getByLabel("Nome", { exact: false }).first().fill("Maria privada");
+  await page.getByRole("button", { name: "Salvar minha resposta" }).click();
+  await expect(page.getByText("Seu lugar ao sol tá garantido!")).toBeVisible();
+  await control(request, { nextGuest: true });
+  const second = await browser.newPage({ baseURL: "http://localhost:3101" });
+  try {
+    await login(second);
+    await expect(
+      second.getByLabel("Nome", { exact: false }).first(),
+    ).toHaveValue("Elisa Souza");
+    await expect(
+      second.getByRole("button", { name: "Editar minha resposta" }),
+    ).toHaveCount(0);
+    await second.getByRole("button", { name: "Salvar minha resposta" }).click();
+    await expect(
+      second.getByText("Seu lugar ao sol tá garantido!"),
+    ).toBeVisible();
+    expect((await second.request.get("/organizador/exportar")).status()).toBe(
+      403,
+    );
+    const { rows } = await (await request.get(`${mock}/__state`)).json();
+    expect(Object.keys(rows).sort()).toEqual([
+      "guest-test-elisa",
+      "guest-test-maria",
+    ]);
+    await page.reload();
+    await expect(
+      page.getByRole("button", { name: "Editar minha resposta" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Editar minha resposta" }).click();
+    await expect(page.getByLabel("Nome", { exact: false }).first()).toHaveValue(
+      "Maria privada",
+    );
+  } finally {
+    await second.close();
+  }
 });
 
 test("callback cancellation/failure, absent profile and expired session are handled", async ({

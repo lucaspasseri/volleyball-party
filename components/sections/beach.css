@@ -1,0 +1,535 @@
+.beach-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 36px;
+  margin-bottom: 30px;
+}
+.beach-heading h2 {
+  font-size: clamp(3.8rem, 7vw, 6.8rem);
+  line-height: 0.92;
+  margin-top: 14px;
+}
+.beach-heading h2 em {
+  color: #ac492e;
+  font-style: normal;
+}
+.beach-heading > p {
+  color: var(--muted);
+  max-width: 33ch;
+  line-height: 1.55;
+}
+.beach-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.beach-kicker > span {
+  color: #b64c29;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.beach-experience {
+  border-top: 1px solid #173e5240;
+}
+.beach-actions,
+.beach-map-bar,
+.map-name,
+.map-tools,
+.beach-participants,
+.beach-album-button,
+.beach-icon,
+.beach-invite,
+.beach-editor,
+.beach-discovery,
+.sticker-album header {
+  display: flex;
+  align-items: center;
+}
+.beach-actions,
+.beach-map-bar,
+.sticker-album header {
+  justify-content: space-between;
+  gap: 12px;
+}
+.beach-actions {
+  padding: 14px 0;
+}
+.beach-participants,
+.beach-album-button,
+.map-name,
+.beach-invite {
+  gap: 9px;
+}
+.beach-participants {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.beach-album-button {
+  border-radius: 30px;
+  background: var(--sun);
+  color: var(--ink);
+  padding: 10px 18px;
+  font-weight: 750;
+  min-height: 44px;
+}
+.beach-experience button:not(:disabled),
+.sticker-album button {
+  cursor: pointer;
+}
+.beach-album-button:hover {
+  background: #ffc02f;
+}
+.beach-map {
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 #173e521e;
+  background: #fffcf3;
+}
+.beach-map-bar {
+  padding: 6px 16px 6px 20px;
+  background: var(--ink);
+  color: var(--cream);
+}
+.map-name strong {
+  font: 600 1.32rem var(--display);
+}
+.map-tools {
+  gap: 1px;
+}
+.beach-icon {
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  border-radius: 8px;
+}
+.beach-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.map-tools button:hover {
+  background: #ffffff26;
+}
+.beach-icon:disabled {
+  opacity: 0.42;
+}
+.zoom-label {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 4ch;
+  text-align: center;
+}
+.beach-camera {
+  position: relative;
+  overflow: auto;
+  max-height: min(72vh, 820px);
+  scrollbar-width: thin;
+  scrollbar-color: #577a7c #f2deb3;
+  background: #edd79e;
+  overscroll-behavior-x: contain;
+}
+.beach-stage {
+  aspect-ratio: 3 / 2;
+  position: relative;
+  isolation: isolate;
+  background: #f0d39c;
+}
+.beach-stage.is-placing {
+  cursor: crosshair;
+}
+.beach-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  pointer-events: none;
+}
+.zone-pin {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -105%);
+  width: 42px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+.zone-pin span {
+  background: #fff9e8;
+  border: 2px solid var(--ink);
+  box-shadow:
+    0 2px 0 var(--ink),
+    0 3px 6px #243a3c50;
+  border-radius: 50% 50% 50% 6px;
+  display: grid;
+  width: 33px;
+  height: 33px;
+  place-items: center;
+}
+.zone-pin.chosen span {
+  background: var(--sun);
+}
+.zone-pin:hover,
+.zone-pin:focus-visible {
+  z-index: 6;
+}
+.beach-sticker-anchor {
+  position: absolute;
+  z-index: 3;
+  width: 6%;
+  height: 9%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.beach-sticker-anchor button {
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+.beach-sticker-anchor img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px #3c402865);
+}
+.draft-anchor {
+  z-index: 5;
+}
+.draft-sticker {
+  outline: 2px dashed var(--ink);
+  outline-offset: 2px;
+  border-radius: 50%;
+  background: #fff3cc66;
+  cursor: grab !important;
+}
+.draft-sticker:active {
+  cursor: grabbing !important;
+}
+.beach-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 16px 6px;
+}
+.beach-legend button {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #173e523d;
+  border-radius: 25px;
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+.beach-legend button:hover,
+.beach-legend button[aria-pressed="true"] {
+  background: #f6da85;
+  border-color: #86703b;
+}
+.beach-discovery {
+  gap: 10px;
+  min-height: 57px;
+  padding: 8px 20px 14px;
+  font-size: 0.94rem;
+}
+.beach-discovery strong,
+.beach-discovery p {
+  display: inline;
+  line-height: 1.45;
+}
+.beach-discovery strong {
+  margin-right: 10px;
+}
+.beach-discovery .beach-icon {
+  margin-left: auto;
+}
+.beach-invite {
+  margin: 16px 0 0;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+.beach-invite a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.beach-editor {
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #f5eacd;
+  border-radius: 12px;
+}
+.beach-editor > div:nth-child(2) {
+  flex: 1 1 220px;
+}
+.beach-editor p,
+.beach-editor small {
+  line-height: 1.45;
+  display: block;
+}
+.beach-editor small {
+  margin-top: 4px;
+  color: var(--muted);
+}
+.editor-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.9rem;
+}
+.beach-feedback {
+  padding: 8px 0 14px;
+  font-weight: 700;
+}
+.beach-image-error {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  max-width: 32ch;
+  background: var(--cream);
+  padding: 10px;
+}
+.beach-loading {
+  min-height: min(65vw, 600px);
+  background: #efdfb6;
+  border-radius: 12px;
+  padding: 24px;
+}
+.sticker-album {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(670px, calc(100% - 24px));
+  max-height: calc(100dvh - 26px);
+  overflow-y: auto;
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  background: #fffaf0;
+  color: var(--ink);
+  box-shadow: 0 18px 80px #173e5266;
+}
+.sticker-album::backdrop {
+  background: #123541a8;
+}
+.album-content {
+  padding: 24px;
+}
+.sticker-album header {
+  align-items: start;
+  margin-bottom: 20px;
+}
+.sticker-album h3 {
+  font-size: clamp(2.1rem, 5vw, 3rem);
+  margin-top: 5px;
+  font-weight: 700;
+}
+.sticker-album header .beach-icon {
+  background: #eee9d9;
+  flex: 0 0 36px;
+}
+.album-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 16px;
+}
+.album-preview {
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 50% 47%, #fff2b4 0%, #f3cb66 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px;
+  min-width: 0;
+}
+.album-preview img {
+  width: 100%;
+  height: 172px;
+  object-fit: contain;
+}
+.album-preview strong {
+  font: 700 1.6rem var(--display);
+  margin-top: 8px;
+}
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+.album-grid button {
+  position: relative;
+  background: #efe9d9;
+  aspect-ratio: 1;
+  border-radius: 9px;
+  padding: 4px;
+  min-width: 0;
+}
+.album-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.album-ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  border: 2px solid var(--ink);
+}
+.album-ring svg {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  box-sizing: content-box;
+  padding: 2px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: white;
+}
+.sticker-album footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: end;
+}
+@media (max-width: 700px) {
+  .beach-heading {
+    display: block;
+    margin-bottom: 22px;
+  }
+  .beach-heading > p {
+    margin-top: 16px;
+    max-width: 42ch;
+  }
+  .beach-heading h2 {
+    font-size: clamp(3.3rem, 10vw, 4.3rem);
+  }
+  .beach-actions {
+    gap: 6px;
+  }
+  .beach-participants {
+    font-size: 0.85rem;
+  }
+  .beach-map-bar {
+    padding: 3px 6px 3px 10px;
+    gap: 3px;
+  }
+  .map-name {
+    gap: 6px;
+  }
+  .map-name strong {
+    font-size: 1.09rem;
+  }
+  .map-name > svg {
+    width: 16px;
+  }
+  .map-tools .beach-icon {
+    width: 30px;
+    height: 38px;
+  }
+  .beach-legend {
+    gap: 6px;
+    padding: 12px 10px 4px;
+  }
+  .beach-legend button {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+  .beach-discovery {
+    padding: 10px 12px 14px;
+  }
+  .beach-album-button {
+    font-size: 0.86rem;
+    padding: 9px 12px;
+  }
+  .beach-camera {
+    max-height: min(62vh, 470px);
+  }
+  .album-content {
+    padding: 16px;
+  }
+  .album-layout {
+    grid-template-columns: 1fr;
+  }
+  .album-preview {
+    flex-direction: row;
+    gap: 16px;
+  }
+  .album-preview img {
+    width: 95px;
+    height: 95px;
+  }
+  .album-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .sticker-album footer .button {
+    width: 100%;
+  }
+}
+@media (max-width: 420px) {
+  .album-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .beach-participants > svg,
+  .map-name > svg {
+    display: none;
+  }
+}
+.beach-map {
+  container-type: inline-size;
+}
+.beach-camera {
+  height: max(66.667cqw, 466.667px);
+  max-height: none;
+}
+.zone-pin .zone-tag,
+.guest-tag {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100%;
+  padding: 4px 9px;
+  width: max-content;
+  height: auto;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  background: #fff9e8;
+  box-shadow: 0 2px 0 #173e5255;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.guest-tag {
+  z-index: 6;
+}
+.beach-sticker-anchor:has(.guest-tag) {
+  z-index: 7;
+}
+@media (max-width: 700px) {
+  .beach-camera {
+    max-height: 62vh;
+  }
+}
+
+.beach-pan-hint {
+  display: none;
+}
+@media (max-width: 700px) {
+  .beach-pan-hint {
+    display: inline;
+  }
+}

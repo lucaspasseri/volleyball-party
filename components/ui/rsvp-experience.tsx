@@ -416,7 +416,7 @@ export function RsvpExperience({
                       {values.full_name.trim()
                         ? ` (${firstName(values.full_name)})`
                         : ""}
-                      .
+                      {" e mostrar minha figurinha se eu guardar um lugar na praia."}
                     </span>
                   </label>
                   {values.public_visibility_consent && view.user.avatarUrl && (

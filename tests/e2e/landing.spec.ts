@@ -66,7 +66,7 @@ test("six sections, correct date, RSVP setup state and no overflow", async ({
   await expect(page.locator("#presenca")).toContainText("As confirmações estão sendo preparadas");
   await expect(page.locator("#presenca")).toContainText("Nenhuma informação é enviada");
   await expect(page.locator("#expectativas")).toContainText(
-    "EXPERIÊNCIA EM BREVE",
+    "Seu lugar na areia.",
   );
   await expect(page.locator(".map-top")).toContainText("MAPA GERAL");
   await expect(

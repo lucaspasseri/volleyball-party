@@ -16,6 +16,11 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run dev",
+    env: {
+      DATABASE_URL: "",
+      NEON_AUTH_BASE_URL: "",
+      NEON_AUTH_COOKIE_SECRET: "",
+    },
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
