@@ -59,14 +59,14 @@ export const zones = {
     regions: [
       path([1109, 400], [1195, 349], [1474, 356], [1418, 431], [1108, 438]),
     ],
-    anchors: path([1160, 403], [1251, 383], [1354, 376], [1304, 425]),
+    anchors: path([1204, 432], [1251, 383], [1354, 376], [1304, 425]),
   },
   torcida: {
     name: "Bancos",
     line: "Vale gritar ponto até quando a bola cai fora!",
     width: 0.083,
     regions: [path([228, 832], [613, 856], [601, 949], [229, 919])],
-    anchors: path([413, 856], [544, 868], [295, 850]),
+    anchors: path([413, 856], [504, 866], [295, 850]),
   },
   cadeiras: {
     name: "Cadeiras",
@@ -83,7 +83,7 @@ export const zones = {
     line: "Escolha um cantinho na areia.",
     width: 0.073,
     regions: [],
-    anchors: path([782, 743], [653, 683], [886, 835], [488, 720], [277, 687]),
+    anchors: path([740, 681], [653, 683], [360, 766], [488, 720], [277, 687]),
   },
 };
 export type ZoneId = keyof typeof zones;

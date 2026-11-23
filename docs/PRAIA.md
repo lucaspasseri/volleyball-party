@@ -6,8 +6,8 @@ A seção **Expectativas** abre um mapa de Copacabana com seis áreas exploráve
 
 | Arquivo | Uso | Dimensões | Tamanho |
 | --- | --- | --- | --- |
-| [Copacabana](../public/beach/copacabana.webp) | Mapa detalhado e zoom | 1536 × 1024 | 381 KiB |
-| [Copacabana no celular](../public/beach/copacabana-small.webp) | Primeira vista em telas de até 700 px | 1000 × 667 | 185 KiB |
+| [Copacabana](../public/beach/copacabana.webp) | Mapa detalhado e zoom | 1536 × 1024 | 383 KiB |
+| [Copacabana no celular](../public/beach/copacabana-small.webp) | Primeira vista em telas de até 700 px | 1000 × 667 | 174 KiB |
 | [12 figurinhas](../public/beach/stickers/) | Álbum, convidados e rascunho | 256 × 256 cada | 305 KiB no total |
 
 A ilustração e as figurinhas foram produzidas para o convite com o ImageGen integrado. O original do mapa tem 1536 px de largura, abaixo dos 3000 px sugeridos no brief. Os PNGs de origem ficam fora do diretório público. O navegador carrega o mapa sob demanda e o álbum tem um pacote JavaScript separado. A caixa da cena reserva espaço antes de a imagem chegar. [Arte e prompt do mapa](art/copacabana.md) · [Inventário, folha original e prompt das figurinhas](art/stickers.md)
@@ -16,7 +16,7 @@ A ilustração e as figurinhas foram produzidas para o convite com o ImageGen in
 
 A arte, as áreas de interação e as figurinhas compartilham uma superfície de proporção 3:2. A vista inicial mostra o mapa inteiro no celular. Escolher uma área ou começar a posicionar uma figurinha amplia o mapa em telas estreitas. Com zoom, é possível deslizar a praia ou usar o botão de centralizar. Apenas o arraste iniciado sobre a própria figurinha captura o dedo.
 
-Os polígonos e os pontos sugeridos foram traçados sobre a ilustração de 1536 × 1024 e convertidos em frações. As duas quadras têm seis posições sugeridas ao todo. Há quatro lugares à sombra do gazebo branco, quatro ao redor dos coolers, três no banco comprido e um em cada cadeira. O banco menor já tem um banhista pintado. O atalho dá preferência a um ponto desocupado. No arraste, um pequeno anel aparece junto a um ponto disponível e a figurinha se acomoda ali ao soltar. Em areia livre, ela fica onde foi solta. O mesmo editor aceita toque e setas do teclado, com Shift para um passo maior. Apenas **Guardar lugar** grava a alteração. [Geometria e catálogo](../lib/beach.ts)
+Os polígonos e os pontos sugeridos foram traçados sobre a ilustração de 1536 × 1024 e convertidos em frações. As duas quadras têm seis posições sugeridas ao todo. Há quatro lugares à sombra do gazebo branco, quatro ao redor dos coolers, três no banco comprido e um em cada uma das duas cadeiras sob o guarda-sol. O banco menor já tem um banhista pintado. O atalho dá preferência a um ponto desocupado. No arraste, um pequeno anel aparece junto a um ponto disponível e a figurinha se acomoda ali ao soltar. Em areia livre, ela fica onde foi solta. O mesmo editor aceita toque e setas do teclado, com Shift para um passo maior. Apenas **Guardar lugar** grava a alteração. [Geometria e catálogo](../lib/beach.ts)
 
 As posições de interação usam a borda inferior visível de cada desenho. O aplicativo converte esse ponto no centro do quadrado antes de salvar. Na leitura, faz a conversão inversa com a largura definida pela área e a margem transparente da figurinha. Assim, os centros normalizados e os seis identificadores de área já gravados continuam válidos, sem migração. O ID histórico `torcida` identifica os bancos e `beira-mar` identifica a areia livre. Os limites da areia se aplicam ao reposicionar.
 
