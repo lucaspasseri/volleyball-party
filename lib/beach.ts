@@ -13,11 +13,68 @@ export const stickerNames = {
   capita: "Capitã da quadra",
   soneca: "Mestre da soneca",
   mergulho: "Peixinho",
+  saque: "Saque viagem",
+  cortada: "Cortada no alto",
+  manchete: "Dona da manchete",
+  largadinha: "Largadinha de leve",
+  bloqueio: "Muralha no ar",
+  ponto: "É ponto!",
+  brinde: "Um brinde!",
+  protetor: "Passa o protetor",
+  milho: "Milho da praia",
+  cadeirinha: "Só mais um capítulo",
+  selfie: "Selfie da orla",
+  passinho: "No passinho",
+  tchibum: "Tchibum!",
+  crawl: "De braçada",
+  embaixadinha: "Embaixadinha",
+  calcadao: "Passada no calçadão",
+  cooler: "Chegou o gelo",
+  leque: "Brisa de leque",
 } as const;
 export type Point = { x: number; y: number };
 export type Rect = { left: number; top: number; width: number; height: number };
 export type StickerId = keyof typeof stickerNames;
 export const stickerIds = Object.keys(stickerNames) as StickerId[];
+
+export const stickerGroups: { name: string; ids: StickerId[] }[] = [
+  {
+    name: "Vôlei",
+    ids: [
+      "levantadora",
+      "foguete",
+      "paredao",
+      "siri",
+      "capita",
+      "mergulho",
+      "saque",
+      "cortada",
+      "manchete",
+      "largadinha",
+      "bloqueio",
+    ],
+  },
+  {
+    name: "Praia e mar",
+    ids: [
+      "salva-vidas",
+      "surfista",
+      "gaivota",
+      "tchibum",
+      "crawl",
+      "embaixadinha",
+      "calcadao",
+    ],
+  },
+  {
+    name: "Sossego",
+    ids: ["soneca", "capivara", "protetor", "milho", "cadeirinha", "leque"],
+  },
+  {
+    name: "Festa",
+    ids: ["ponto", "coco", "brinde", "selfie", "passinho", "cooler"],
+  },
+];
 
 // Trace landmarks on the 1536 × 1024 master. The rest of the app uses fractions.
 const artPoint = ([x, y]: [number, number]): Point => ({
@@ -85,8 +142,36 @@ export const zones = {
     regions: [],
     anchors: path([740, 681], [653, 683], [360, 766], [488, 720], [277, 687]),
   },
+  mar: {
+    name: "Mar",
+    line: "Um mergulho antes da próxima partida?",
+    width: 0.055,
+    regions: [path([0, 100], [1050, 100], [1050, 186], [600, 240], [0, 294])],
+    anchors: path([516, 185], [710, 151], [320, 204]),
+  },
+  calcadao: {
+    name: "Calçadão",
+    line: "Um passeio pelas ondas de pedra da orla.",
+    width: 0.09,
+    regions: [path([0, 905], [1536, 1008], [1536, 1024], [0, 1024])],
+    anchors: path([315, 978], [120, 969], [530, 989]),
+  },
 };
 export type ZoneId = keyof typeof zones;
+export const suggestedZones: Partial<Record<StickerId, ZoneId>> = {
+  brinde: "coolers",
+  cooler: "coolers",
+  protetor: "beira-mar",
+  milho: "torcida",
+  cadeirinha: "beira-mar",
+  selfie: "calcadao",
+  passinho: "gazebo",
+  tchibum: "mar",
+  crawl: "mar",
+  embaixadinha: "beira-mar",
+  calcadao: "calcadao",
+  leque: "gazebo",
+};
 export const zoneIds = Object.keys(zones) as ZoneId[];
 export type GroundPosition = Point & { zone_id: ZoneId };
 
@@ -105,6 +190,11 @@ const spriteBottom: Partial<Record<StickerId, number>> = {
   mergulho: 215,
   soneca: 243,
   capita: 250,
+  manchete: 236,
+  tchibum: 221,
+  crawl: 187,
+  embaixadinha: 244,
+  leque: 227,
 };
 export function sole(id: StickerId) {
   return (spriteBottom[id] ?? 248) / 256;
@@ -119,15 +209,18 @@ export function placementAt(
   p: GroundPosition,
   sticker_id: StickerId,
 ): Placement {
-  return { ...p, y: p.y - centerOffset(p.zone_id, sticker_id), sticker_id };
+  const y = clamp(
+    p.y - centerOffset(p.zone_id, sticker_id),
+    inset.y,
+    1 - inset.y,
+  );
+  return { ...p, y, sticker_id };
 }
 
-// The shoreline and front edge of the promenade slope across the painting.
-// On the right the accessible sand starts inside the open gazebo.
+// Keep placements below the horizon and out of the gazebo roof on the right.
 const beachEdge = path(
-  [0, 321],
-  [900, 223],
-  [1051, 218],
+  [0, 140],
+  [1050, 140],
   [1108, 394],
   [1195, 350],
   [1536, 359],
@@ -138,8 +231,8 @@ export function playable(point: Point): Point {
   const end = beachEdge.findIndex((p) => p.x >= x);
   const a = beachEdge[end - 1],
     b = beachEdge[end];
-  const shore = a.y + ((b.y - a.y) * (x - a.x)) / (b.x - a.x);
-  return { x, y: clamp(point.y, shore, 0.896 + x * 0.045) };
+  const top = a.y + ((b.y - a.y) * (x - a.x)) / (b.x - a.x);
+  return { x, y: clamp(point.y, top, 0.976) };
 }
 function contains(polygon: Point[], p: Point) {
   let inside = false;

@@ -46,6 +46,8 @@ try {
     "tests/database/bootstrap.sql",
     "-f",
     "db/001_initial.sql",
+    "-f",
+    "db/002_beach_collection.sql",
   ]);
   if (process.argv[2] === "--e2e") {
     child = spawn(

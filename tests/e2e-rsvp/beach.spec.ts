@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { feet, zones } from "../../lib/beach";
+import { feet, stickerGroups, stickerNames, zones } from "../../lib/beach";
 
 const mock = "http://127.0.0.1:54326";
 
@@ -35,6 +35,31 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await scene.getByRole("button", { name: "Figurinha de Bia" }).click();
   await expect(scene.locator(".beach-discovery")).toContainText("Surfista");
   await scene.getByRole("button", { name: "Ver figurinhas" }).click();
+  const album = page.getByRole("dialog");
+  await expect(album).toBeVisible();
+  expect(await album.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(
+    true,
+  );
+  for (const group of stickerGroups) {
+    await album.getByRole("button", { name: group.name, exact: true }).click();
+    const grid = album.getByRole("group", {
+      name: `Figurinhas · ${group.name}`,
+    });
+    await expect(grid.getByRole("button")).toHaveCount(group.ids.length);
+    for (const id of group.ids) {
+      const tile = grid.getByRole("button", {
+        name: stickerNames[id],
+        exact: true,
+      });
+      await expect
+        .poll(() =>
+          tile
+            .locator("img")
+            .evaluate((img: HTMLImageElement) => img.naturalWidth),
+        )
+        .toBe(256);
+    }
+  }
   await expect(
     page
       .getByRole("dialog")
@@ -54,9 +79,6 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await expect(
     page.getByRole("dialog").locator(".album-preview"),
   ).toContainText("Siri do saque");
-  await page
-    .getByRole("dialog")
-    .screenshot({ ...capture, path: info.outputPath("album.png") });
   await page.getByRole("button", { name: "Usar esta figurinha" }).click();
   await scene.getByRole("button", { name: "Gazebo", exact: true }).click();
   const zoomIn = scene.getByRole("button", { name: "Aumentar zoom" });
@@ -151,17 +173,24 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
     ).toBeCloseTo(saved.y, 3);
   }
   await scene.getByRole("button", { name: "Editar meu lugar" }).click();
-  await page.getByRole("button", { name: "Coco gelado", exact: true }).click();
+  await album.getByRole("button", { name: "Praia e mar", exact: true }).click();
+  await album.getByRole("button", { name: "De braçada", exact: true }).click();
+  await expect(album.locator(".album-preview")).toContainText("De braçada");
+  await album.screenshot({ ...capture, path: info.outputPath("album.png") });
   await page.getByRole("button", { name: "Usar esta figurinha" }).click();
-  await scene.getByRole("button", { name: "Cadeiras", exact: true }).click();
+  const groundAfterSwap = await scene
+    .locator(".draft-anchor")
+    .evaluate((el) => parseFloat((el as HTMLElement).style.top) / 100);
+  expect(groundAfterSwap).toBeCloseTo(feet(saved).y, 4);
+  await scene.getByRole("button", { name: "Mar", exact: true }).click();
   await scene.getByRole("button", { name: "Restaurar vista inicial" }).click();
   const camera = scene.locator(".beach-camera");
   await camera.scrollIntoViewIfNeeded();
   const rendered = (await scene.locator(".beach-stage").boundingBox())!;
   const windowBox = (await camera.boundingBox())!;
   const tap = {
-    x: Math.round(windowBox.x + windowBox.width * 0.54),
-    y: Math.round(windowBox.y + windowBox.height * 0.71),
+    x: Math.round(windowBox.x + windowBox.width * 0.55),
+    y: Math.round(windowBox.y + windowBox.height * 0.18),
   };
   if (info.project.name === "mobile") await page.touchscreen.tap(tap.x, tap.y);
   else await page.mouse.click(tap.x, tap.y);
@@ -174,11 +203,12 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await scene.getByRole("button", { name: "Guardar lugar" }).click();
   await expect(own.locator("img")).toHaveAttribute(
     "src",
-    "/beach/stickers/coco.webp",
+    "/beach/stickers/crawl.webp",
   );
   const moved = (await (await request.get(mock + "/__state")).json())
     .placements[owner];
   expect(moved.id).toBe(saved.id);
+  expect(moved.zone_id).toBe("mar");
   expect(moved.x).toBeCloseTo((tap.x - rendered.x) / rendered.width - 0.008, 2);
   expect(feet(moved).y).toBeCloseTo((tap.y - rendered.y) / rendered.height, 2);
   const visitor = await browser.newPage();
@@ -187,6 +217,11 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
     await expect(
       visitor.getByRole("button", { name: "Figurinha de Maria" }),
     ).toBeVisible();
+    await expect(
+      visitor
+        .getByRole("button", { name: "Figurinha de Maria" })
+        .locator("img"),
+    ).toHaveAttribute("src", "/beach/stickers/crawl.webp");
     await expect(
       visitor.getByRole("button", { name: "Editar meu lugar" }),
     ).toHaveCount(0);

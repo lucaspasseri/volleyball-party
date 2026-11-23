@@ -14,6 +14,7 @@ import {
   Snowflake,
   Tent,
   Volleyball,
+  Waves,
   Shell,
   X,
 } from "lucide-react";
@@ -40,6 +41,8 @@ const icons = {
   cadeiras: Armchair,
   torcida: Sofa,
   "beira-mar": Shell,
+  mar: Waves,
+  calcadao: Footprints,
 };
 export type CameraTarget = { point: Point };
 type Props = {

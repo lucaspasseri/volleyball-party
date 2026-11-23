@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Check, X } from "lucide-react";
 import {
-  stickerIds,
+  stickerGroups,
   stickerNames,
   stickerSrc,
   type StickerId,
@@ -24,6 +24,7 @@ export default function StickerGallery({
 }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [selected, select] = useState(initial);
+  const group = stickerGroups.find(({ ids }) => ids.includes(selected))!;
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
@@ -53,6 +54,20 @@ export default function StickerGallery({
             <X />
           </button>
         </header>
+        <div className="album-filters" role="group" aria-label="Atividades">
+          {stickerGroups.map((item) => (
+            <button
+              key={item.name}
+              type="button"
+              aria-pressed={item === group}
+              onClick={() => {
+                if (item !== group) select(item.ids[0]);
+              }}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
         <div className="album-layout">
           <div className="album-preview">
             <motion.img
@@ -65,8 +80,12 @@ export default function StickerGallery({
             />
             <strong>{stickerNames[selected]}</strong>
           </div>
-          <div className="album-grid" aria-label="Figurinhas disponíveis">
-            {stickerIds.map((id) => (
+          <div
+            className="album-grid"
+            role="group"
+            aria-label={`Figurinhas · ${group.name}`}
+          >
+            {group.ids.map((id) => (
               <motion.button
                 key={id}
                 type="button"

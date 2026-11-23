@@ -9,6 +9,7 @@ import {
   placementAt,
   stickerNames,
   stickerSrc,
+  suggestedZones,
   suggestSpot,
   zones,
   type Placement,
@@ -38,11 +39,13 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   const count = rows.filter((r) => r.shared).length;
   const others = rows.filter((row) => !row.mine).map(feet);
   function pick(sticker_id: StickerId) {
-    const zone_id = active ?? own?.zone_id ?? "quadras";
+    const zone_id =
+      active ?? own?.zone_id ?? suggestedZones[sticker_id] ?? "quadras";
     const previous = draft ?? own;
-    const next = previous
-      ? { x: previous.x, y: previous.y, zone_id: previous.zone_id, sticker_id }
-      : placementAt(suggestSpot(zone_id, others), sticker_id);
+    const point = previous
+      ? { ...feet(previous), zone_id: previous.zone_id }
+      : suggestSpot(zone_id, others);
+    const next = placementAt(point, sticker_id);
     setDraft(next);
     setActive(next.zone_id);
     setFocus({ point: next });
@@ -118,7 +121,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
           />
           <div>
             <strong>{stickerNames[draft.sticker_id]}</strong>
-            <p>Escolha uma área, toque na areia ou arraste sua figurinha.</p>
+            <p>Escolha uma área, toque no mapa ou arraste sua figurinha.</p>
             <small>
               {shared
                 ? "Seu primeiro nome e sua figurinha ficarão visíveis na praia."

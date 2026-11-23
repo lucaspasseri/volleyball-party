@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import {
   destination,
   feet,
@@ -9,6 +10,7 @@ import {
   placementSchema,
   playable,
   scenePoint,
+  stickerGroups,
   stickerIds,
   suggestSpot,
   zoneAt,
@@ -101,11 +103,15 @@ test("four guests can gather at the coolers and the occupied small bench has no 
   assert.equal(nearbyAnchor(occupiedBench, []), undefined);
 });
 
-test("out-of-bounds drops stay on sand and every converted center fits the database", () => {
+test("the water and promenade accept placements and every bounded center fits the database", () => {
+  for (const id of ["mar", "calcadao"] as const) {
+    const point = zones[id].anchors[0];
+    assert.deepEqual(destination(point, [], false), { ...point, zone_id: id });
+  }
   for (const x of [-4, 0.32, 0.63, 0.85, 3]) {
     for (const y of [-5, 0.5, 2]) {
       const point = destination({ x, y }, [], true);
-      assert.ok(point.y > 0.2 && point.y < 0.95);
+      assert.ok(point.y > 0.1 && point.y < 0.98);
       if (x >= 0.85) assert.ok(point.y > 0.34);
       for (const sticker of stickerIds)
         assert.ok(
@@ -114,9 +120,48 @@ test("out-of-bounds drops stay on sand and every converted center fits the datab
     }
   }
 });
+test("all 30 stickers appear once in the album with distinct assets", () => {
+  assert.equal(stickerIds.length, 30);
+  const grouped = stickerGroups.flatMap(({ ids }) => ids);
+  assert.deepEqual(grouped.sort(), [...stickerIds].sort());
+  const dir = "public/beach/stickers";
+  assert.deepEqual(
+    readdirSync(dir)
+      .filter((file) => file.endsWith(".webp"))
+      .sort(),
+    stickerIds.map((id) => `${id}.webp`).sort(),
+  );
+  const hashes = stickerIds.map((id) =>
+    createHash("sha256")
+      .update(readFileSync(`${dir}/${id}.webp`))
+      .digest("hex"),
+  );
+  assert.equal(new Set(hashes).size, 30);
+});
+
 test("all previous IDs and centers remain readable and invalid payloads are rejected", () => {
-  for (const id of stickerIds)
-    assert.ok(existsSync(`public/beach/stickers/${id}.webp`));
+  for (const sticker_id of [
+    "levantadora",
+    "foguete",
+    "paredao",
+    "salva-vidas",
+    "surfista",
+    "capivara",
+    "siri",
+    "coco",
+    "gaivota",
+    "capita",
+    "soneca",
+    "mergulho",
+  ])
+    assert.ok(
+      placementSchema.safeParse({
+        x: 0.4,
+        y: 0.6,
+        zone_id: "quadras",
+        sticker_id,
+      }).success,
+    );
   for (const id of zoneIds) {
     assert.ok(
       placementSchema.safeParse({

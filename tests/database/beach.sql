@@ -8,6 +8,9 @@ set local role pesca_runtime;
 select set_config('pesca.test_subject','guest-a',true);
 do $$ begin
   if pesca.save_beach_sticker(nullif(current_setting('pesca.test_subject'), ''), 'coco','quadras',.3,.4)->>'ok' <> 'true' then raise exception 'Save failed'; end if;
+  if pesca.save_beach_sticker('guest-a', 'crawl','mar',.35,.15)->>'ok' <> 'true'
+    or pesca.save_beach_sticker('guest-a', 'calcadao','calcadao',.2,.91)->>'ok' <> 'true'
+    then raise exception 'New placement rejected'; end if;
   if pesca.save_beach_sticker(nullif(current_setting('pesca.test_subject'), ''), 'gaivota','cadeiras',.87,.75)->>'ok' <> 'true' then raise exception 'Reposition failed'; end if;
   if jsonb_array_length(pesca.beach_scene('guest-a')) <> 1 then raise exception 'Duplicate'; end if;
   if pesca.save_beach_sticker(nullif(current_setting('pesca.test_subject'), ''), 'gaivota','cadeiras',2,.5)->>'ok' <> 'false'
