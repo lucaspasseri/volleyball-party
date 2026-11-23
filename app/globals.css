@@ -2262,3 +2262,327 @@ h3 {
     transform: none !important;
   }
 }
+
+/* RSVP: keep the invitation's paper, ink and summer palette. */
+.rsvp-live {
+  transform: none;
+  position: relative;
+}
+.rsvp-live p,
+.rsvp-live label,
+.rsvp-live legend {
+  font-size: 0.9375rem;
+}
+.rsvp-live .eyebrow {
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+}
+.rsvp-live .form-footnote,
+.rsvp-privacy p,
+.rsvp-account {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.rsvp-feedback:empty {
+  display: none;
+}
+.rsvp-feedback:not(:empty),
+.rsvp-alert {
+  margin-top: 18px;
+  padding: 12px;
+  background: #f8c74b30;
+  border-radius: 5px;
+  font-size: 0.9375rem;
+}
+.rsvp-alert,
+.field-error {
+  color: #8f321e;
+}
+.rsvp-live input,
+.rsvp-live textarea,
+.rsvp-live select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #173e5255;
+  border-radius: 4px;
+  background: #fffdf7;
+  color: var(--ink);
+  font: inherit;
+  margin-bottom: 16px;
+}
+.rsvp-live textarea {
+  resize: vertical;
+}
+.rsvp-live select {
+  appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23173e52' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.rsvp-live input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+.rsvp-live label span {
+  font-weight: 400;
+}
+.rsvp-live .attendance-choices {
+  margin: 2px 0 22px;
+}
+.attendance-choices legend {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.attendance-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.rsvp-live .attendance-card {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 7px;
+  cursor: pointer;
+  border: 1px solid #173e5244;
+  border-radius: 6px;
+  padding: 13px 6px;
+  position: relative;
+  margin: 0;
+  background: #fffdf7;
+}
+.attendance-card.selected {
+  background: #f8c74b40;
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.attendance-card > span:first-of-type {
+  font-size: 1.7rem;
+}
+.attendance-card:focus-within {
+  outline: 3px solid var(--coral);
+  outline-offset: 3px;
+}
+.rsvp-live .attendance-card input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+.rsvp-extras {
+  border-block: 1px solid #173e522b;
+  margin: 16px 0 22px;
+  padding-block: 16px;
+}
+.rsvp-extras summary {
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 0.9375rem;
+}
+.rsvp-extras summary span {
+  display: block;
+  margin-left: 16px;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.rsvp-extras[open] summary {
+  margin-bottom: 20px;
+}
+.rsvp-privacy {
+  margin-block: 18px;
+}
+.rsvp-live .checkbox-label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-block: 12px;
+  cursor: pointer;
+}
+.rsvp-live input[type="checkbox"] {
+  flex: 0 0 20px;
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--teal);
+}
+.rsvp-submit,
+.google-button {
+  width: 100%;
+  margin-top: 16px;
+}
+.rsvp-live button:not(:disabled) {
+  cursor: pointer;
+}
+.rsvp-live fieldset:disabled {
+  opacity: 0.7;
+}
+.rsvp-live .field-error {
+  margin: -7px 0 14px;
+  font-size: 0.875rem;
+}
+.rsvp-success-icon {
+  display: grid;
+  place-items: center;
+  background: #2c8c9320;
+  color: var(--teal);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  margin-top: 22px;
+}
+.beach-entry {
+  margin-block: 22px 8px;
+  width: 100%;
+  font-size: 0.9375rem;
+}
+.edit-rsvp {
+  border: 0;
+  padding: 5px 0;
+  color: var(--ink);
+  background: none;
+}
+.rsvp-account {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid #173e522b;
+  margin-top: 24px;
+  padding-top: 10px;
+}
+.rsvp-account button {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  padding: 0;
+}
+.rsvp-celebration {
+  position: absolute;
+  inset: 50px 12px auto;
+  text-align: center;
+  font-size: 1.8rem;
+  pointer-events: none;
+}
+.attendance-list {
+  margin-top: 36px;
+  padding: 22px 0 0;
+  border-top: 1px solid #173e5233;
+}
+.attendance-list-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.attendance-list h3 {
+  font-size: 1.8rem;
+}
+.attendance-count {
+  font-size: 1rem;
+  margin-top: 18px;
+}
+.attendance-count strong {
+  display: inline-block;
+  font: 650 2.5rem/1 var(--display);
+  color: var(--teal);
+  margin-right: 6px;
+}
+.attendance-meta {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.guest-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.guest-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 12px 7px 7px;
+  background: #fffdf7;
+  border: 1px solid #173e5222;
+  border-radius: 30px;
+  font-size: 0.9375rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.guest-chips img,
+.guest-initial {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.guest-initial {
+  display: grid;
+  place-items: center;
+  background: #f8c74b70;
+  font-weight: 600;
+}
+.organizer-page {
+  padding-block: 60px;
+}
+.organizer-page h1 {
+  font: 700 clamp(3rem, 8vw, 5rem)/1 var(--display);
+  margin-block: 24px;
+}
+.organizer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-block: 24px;
+}
+.organizer-table-wrap {
+  overflow-x: auto;
+  margin-block: 24px;
+}
+.organizer-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 800px;
+  font-size: 0.9375rem;
+}
+.organizer-table td,
+.organizer-table th {
+  text-align: left;
+  padding: 14px;
+  border: 1px solid #173e5233;
+  vertical-align: top;
+}
+.organizer-table th {
+  background: #f8c74b40;
+}
+.organizer-table td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 260px;
+}
+@media (max-width: 560px) {
+  .rsvp-live {
+    padding: 22px 18px;
+  }
+  .rsvp-form-wrap {
+    min-width: 0;
+  }
+  .attendance-cards {
+    gap: 6px;
+  }
+  .beach-entry {
+    padding-inline: 10px;
+  }
+}

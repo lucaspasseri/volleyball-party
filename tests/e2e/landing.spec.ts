@@ -40,7 +40,7 @@ test.afterEach(async ({ page }) => {
   ).toEqual([]);
 });
 
-test("six sections, correct date, honest previews and no overflow", async ({
+test("six sections, correct date, RSVP setup state and no overflow", async ({
   page,
 }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "pt-BR");
@@ -63,13 +63,8 @@ test("six sections, correct date, honest previews and no overflow", async ({
   await expect(
     page.getByText("Este é o clima de agora.", { exact: false }),
   ).toBeVisible();
-  await expect(page.getByLabel("Como você se chama?")).toBeDisabled();
-  await expect(
-    page.getByRole("button", { name: "Confirmações em breve" }),
-  ).toBeDisabled();
-  await expect(page.locator("#presenca")).toContainText(
-    "nenhum dado será enviado",
-  );
+  await expect(page.locator("#presenca")).toContainText("As confirmações estão sendo preparadas");
+  await expect(page.locator("#presenca")).toContainText("Nenhuma informação é enviada");
   await expect(page.locator("#expectativas")).toContainText(
     "EXPERIÊNCIA EM BREVE",
   );

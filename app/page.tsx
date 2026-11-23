@@ -3,12 +3,24 @@ import { Hero } from "@/components/sections/hero";
 import { When } from "@/components/sections/when";
 import { Where } from "@/components/sections/where";
 import { How } from "@/components/sections/how";
-import { Rsvp } from "@/components/sections/rsvp";
+import { Rsvp, RsvpLoading } from "@/components/sections/rsvp";
+import { Suspense } from "react";
 import { Expectations } from "@/components/sections/expectations";
 import { Volleyball } from "@/components/illustrations/beach";
 import { event } from "@/lib/event";
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ auth?: string }>;
+}) {
+  const { auth } = await searchParams;
+  const authNotice =
+    auth === "canceled"
+      ? "Tudo bem! A entrada foi cancelada. Quando quiser, tente de novo."
+      : auth === "error"
+        ? "Não conseguimos concluir sua entrada. Tente com Google novamente."
+        : undefined;
   return (
     <>
       <a className="skip-link" href="#conteudo">
@@ -20,7 +32,9 @@ export default function Page() {
         <When />
         <Where />
         <How />
-        <Rsvp />
+        <Suspense fallback={<RsvpLoading />}>
+          <Rsvp authNotice={authNotice} />
+        </Suspense>
         <Expectations />
       </main>
       <footer className="footer container">

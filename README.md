@@ -1,6 +1,6 @@
 # Vôlei do Pesca
 
-Convite de aniversário para uma quinta-feira de vôlei na Praia de Copacabana: **7 de janeiro de 2027, das 9h às 17h, America/Sao_Paulo**. Primeiro marco: seis seções responsivas, identidade visual própria e pontos de integração para os próximos marcos.
+Convite de aniversário para uma quinta-feira de vôlei na Praia de Copacabana: **7 de janeiro de 2027, das 9h às 17h, America/Sao_Paulo**. Seis seções responsivas com identidade visual própria, RSVP com Google/Supabase e gestão de convidados (Marco 2).
 
 ## Executar
 
@@ -40,7 +40,7 @@ Motion (`motion/react`) anima a entrada escalonada do hero, a bola com mola, o s
 
 ## Ambiente e integrações
 
-Nenhuma chave de API é necessária. O arquivo `.env.example` documenta `SITE_URL`, opcional em desenvolvimento. Ao publicar, configure a origem pública completa (por exemplo, `https://seu-dominio.com`) para URLs absolutas corretas nas imagens de compartilhamento. Na Vercel, o domínio de produção também é detectado automaticamente. O deploy precisa suportar o runtime Node.js do Next.js; exportação puramente estática não fornece as rotas de clima e calendário.
+O convite pode abrir sem credenciais. Para habilitar RSVP, configure as variáveis Supabase de `.env.example` e execute a migração SQL. Veja o [guia completo de RSVP, OAuth, RLS e testes](docs/RSVP.md). O arquivo `.env.example` também documenta `SITE_URL`, opcional em desenvolvimento. Ao publicar, configure a origem pública completa (por exemplo, `https://seu-dominio.com`) para URLs absolutas corretas nas imagens de compartilhamento. Na Vercel, o domínio de produção também é detectado automaticamente. O deploy precisa suportar o runtime Node.js do Next.js; exportação puramente estática não fornece as rotas de clima e calendário.
 
 **Open-Meteo:** consulta coordenadas gerais de Copacabana. A requisição solicita condições atuais e até 16 dias de previsão; o servidor reutiliza a resposta por 30 minutos com `next.revalidate`. A previsão da festa aparece somente se a API incluir uma linha completa para a data do evento e o evento ainda não tiver passado. Antes disso, o widget indica explicitamente “Condições atuais”, mostra a hora da observação no fuso do evento e explica a diferença. Falhas de rede, timeout e dados incompletos produzem uma mensagem sem temperaturas inventadas. A página inicial não espera pela API para carregar. Atribuição e link ao provedor estão no widget.
 
@@ -60,7 +60,7 @@ Os testes unitários verificam a conversão de fuso e o formato ICS, o dia da se
 
 ## Próximos marcos e limitações
 
-- **Marco 2:** substituir o `fieldset` desabilitado em `components/sections/rsvp.tsx` por autenticação, validação e persistência. O formulário atual não coleta nem envia dados e nunca simula confirmação.
+- **Marco 2 implementado:** Google OAuth via Supabase SSR, Server Actions, PostgreSQL com RLS, RSVP privado por padrão, consentimentos separados para nome/foto, lista e contagens, moderação e CSV em `/organizador`. Configuração e verificação em [docs/RSVP.md](docs/RSVP.md). Sem credenciais, a seção explica que as confirmações estão sendo preparadas.
 - **Marco 3:** substituir a cena conceitual em `components/sections/expectations.tsx` por escolha e posicionamento de avatares e stickers. A ilustração atual está identificada como prévia.
 - O posto e as barracas ainda não foram definidos. Não há nomes ou ponto de encontro inventados.
 - O clima depende da disponibilidade e dos limites do Open-Meteo; previsão distante não é garantida e pode mudar.
