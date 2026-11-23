@@ -1,6 +1,10 @@
 # Ilustração de Copacabana
 
-O [original em PNG](copacabana.png) foi criado com o ImageGen integrado. A arte tem 1536 × 1024 pixels nativos. As duas versões WebP preservam o enquadramento. Os marcadores, convidados e controles são camadas independentes.
+O [original em PNG](copacabana.png) registra a festa cheia. A edição para o playground usa esse original como referência no ImageGen integrado. O [WebP de 1536 × 1024](../../public/beach/copacabana.webp) e a [versão para celular](../../public/beach/copacabana-small.webp) mostram a mesma praia antes da chegada dos convidados. A ilustração inteira é uma camada raster.
+
+## Prompt de edição
+
+Edit this exact Copacabana illustration into the empty venue before the party. Preserve its 3:2 full-bleed framing, original viewpoint, landscape, bold hand-painted screen-print travel-poster craft and warm afternoon palette. Clear every person, animal, ball, bag, towel and loose decorative object. Retain the two adjacent empty volleyball courts with nets on the mid-left, the big coral-and-cream gazebo on the upper right with a wide clear opening, enough exposed shaded sand underneath to stand several guests. Keep just one small cake and a cooler on a narrow table tucked into the far right rear of the gazebo. Keep the two empty benches lower left and two empty striped beach chairs lower right, with one parasol. Keep original waves, distant skyline, corner fronds and the mosaic along the bottom. Simplify the texture of the sand, retain beautiful subtle grain and coherent sun shadows. Generous breathing room between landmarks for placing guest stickers. No people anywhere. No typography, UI, labels or markers. Return finished polished map artwork.
 
 ## Prompt de geração
 

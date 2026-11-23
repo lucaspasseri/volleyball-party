@@ -5,13 +5,14 @@ import { useState } from "react";
 import { Check, MapPin, Sticker, UsersRound } from "lucide-react";
 import { saveBeachSticker } from "@/app/actions/beach";
 import {
-  nearestZone,
+  feet,
+  placementAt,
   stickerNames,
   stickerSrc,
   suggestSpot,
   zones,
   type Placement,
-  type Point,
+  type GroundPosition,
   type SceneRow,
   type StickerId,
   type ZoneId,
@@ -35,16 +36,13 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   const [message, setMessage] = useState("");
   const [settled, setSettled] = useState(false);
   const count = rows.filter((r) => r.shared).length;
+  const others = rows.filter((row) => !row.mine).map(feet);
   function pick(sticker_id: StickerId) {
     const zone_id = active ?? own?.zone_id ?? "quadras";
     const previous = draft ?? own;
-    const p = previous ?? suggestSpot(zone_id, rows);
-    const next = {
-      x: p.x,
-      y: p.y,
-      zone_id: previous?.zone_id ?? zone_id,
-      sticker_id,
-    };
+    const next = previous
+      ? { x: previous.x, y: previous.y, zone_id: previous.zone_id, sticker_id }
+      : placementAt(suggestSpot(zone_id, others), sticker_id);
     setDraft(next);
     setActive(next.zone_id);
     setFocus({ point: next });
@@ -54,23 +52,16 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   }
   function chooseZone(zone_id: ZoneId) {
     const point = draft
-      ? suggestSpot(
-          zone_id,
-          rows.filter((row) => !row.mine),
-        )
-      : zones[zone_id];
+      ? suggestSpot(zone_id, others)
+      : { ...zones[zone_id].anchors[0], zone_id };
     setActive(zone_id);
     setFocus({ point });
-    if (draft && !pending) {
-      setDraft({ ...draft, x: point.x, y: point.y, zone_id });
-      setMessage("");
-    }
+    if (draft && !pending) move(point);
   }
-  function move(point: Point) {
+  function move(point: GroundPosition) {
     if (!draft || pending) return;
-    const zone_id = nearestZone(point);
-    setDraft({ ...draft, ...point, zone_id });
-    setActive(zone_id);
+    setDraft(placementAt(point, draft.sticker_id));
+    setActive(point.zone_id);
     setMessage("");
   }
   async function save() {
@@ -169,6 +160,8 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
       <SceneViewport
         rows={rows}
         draft={canEdit ? draft : null}
+        others={others}
+        pending={pending}
         active={active}
         focus={focus}
         onZone={chooseZone}

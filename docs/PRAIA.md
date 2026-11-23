@@ -6,19 +6,21 @@ A seção **Expectativas** abre um mapa de Copacabana com seis áreas exploráve
 
 | Arquivo | Uso | Dimensões | Tamanho |
 | --- | --- | --- | --- |
-| [Copacabana](../public/beach/copacabana.webp) | Mapa detalhado e zoom | 1536 × 1024 | 661 KiB |
-| [Copacabana no celular](../public/beach/copacabana-small.webp) | Primeira vista em telas de até 700 px | 1000 × 667 | 275 KiB |
+| [Copacabana](../public/beach/copacabana.webp) | Mapa detalhado e zoom | 1536 × 1024 | 530 KiB |
+| [Copacabana no celular](../public/beach/copacabana-small.webp) | Primeira vista em telas de até 700 px | 1000 × 667 | 239 KiB |
 | [12 figurinhas](../public/beach/stickers/) | Álbum, convidados e rascunho | 256 × 256 cada | 305 KiB no total |
 
 A ilustração e as figurinhas foram produzidas para o convite com o ImageGen integrado. O original do mapa tem 1536 px de largura, abaixo dos 3000 px sugeridos no brief. Os PNGs de origem ficam fora do diretório público. O navegador carrega o mapa sob demanda e o álbum tem um pacote JavaScript separado. A caixa da cena reserva espaço antes de a imagem chegar. [Arte e prompt do mapa](art/copacabana.md) · [Inventário, folha original e prompt das figurinhas](art/stickers.md)
 
 ## Posicionamento e movimento
 
-O ponto salvo corresponde ao **centro** da figurinha na arte completa. A imagem e as sobreposições compartilham a mesma superfície de proporção 3:2. No celular, ela tem pelo menos 700 px de largura e permite rolagem nativa. O zoom aumenta as dimensões reais da superfície e mantém o ponto central da câmera. Os atalhos de área e o botão de centralizar também movimentam a câmera.
+A arte, as áreas de interação e as figurinhas compartilham uma superfície de proporção 3:2. A vista inicial mostra o mapa inteiro no celular. Escolher uma área ou começar a posicionar uma figurinha amplia o mapa em telas estreitas. Com zoom, é possível deslizar a praia ou usar o botão de centralizar. Apenas o arraste iniciado sobre a própria figurinha captura o dedo.
 
-O toque converte a posição do ponteiro em coordenadas da arte com `(clientX - rect.left) / rect.width` e a expressão equivalente para Y. O retângulo é medido depois da rolagem e do zoom. No arraste, o deslocamento inicial entre o dedo e o centro da figurinha é descontado na soltura. Os offsets temporários do Motion voltam a zero ao transferir a posição para as porcentagens de layout. A caixa ocupa 6% da largura e 9% da altura. Margens de metade desses valores mantêm o desenho inteiro dentro do mapa. [Geometria e catálogo](../lib/beach.ts)
+Os polígonos e os pontos sugeridos foram traçados sobre a ilustração de 1536 × 1024 e convertidos em frações. As duas quadras têm seis posições sugeridas ao todo. O gazebo tem quatro, os bancos têm quatro e cada cadeira tem uma. Há também lugares perto dos coolers e uma área de areia livre. O atalho dá preferência a um ponto desocupado. No arraste, um pequeno anel aparece junto a um ponto disponível e a figurinha se acomoda ali ao soltar. Em areia livre, ela fica onde foi solta. O mesmo editor aceita toque e setas do teclado, com Shift para um passo maior. Apenas **Guardar lugar** grava a alteração. [Geometria e catálogo](../lib/beach.ts)
 
-É possível usar um atalho de área, tocar num ponto, arrastar ou ajustar com as setas do teclado. Shift aumenta o passo das setas. Os atalhos sugerem espaço disponível perto da atividade. O álbum anima o contorno de seleção e a prévia ampliada. Cada área tem uma reação curta, a zona próxima acende durante o arraste e a figurinha se acomoda com uma mola após a gravação. As animações respeitam a preferência de movimento reduzido. Apenas **Guardar lugar** grava dados.
+As posições de interação usam a borda inferior visível de cada desenho. O aplicativo converte esse ponto no centro do quadrado antes de salvar. Na leitura, faz a conversão inversa com a largura definida pela área e a margem transparente da figurinha. Assim, os centros normalizados e os seis identificadores de área já gravados continuam válidos, sem migração. O ID histórico `torcida` identifica os bancos e `beira-mar` identifica a areia livre. Os limites da areia se aplicam ao reposicionar.
+
+A sombra e a ordem de desenho seguem o ponto de apoio. Como redes, bancos e cadeiras fazem parte da pintura, a ilustração não encobre partes da figurinha. As sugestões evitam sobreposições com convidados visíveis e a disponibilidade pode mudar com novas confirmações.
 
 ## Persistência e privacidade
 
@@ -34,10 +36,10 @@ Inicialize o [schema da aplicação](../db/001_initial.sql) no banco Neon. O map
 
 As capturas abaixo usam convidados fictícios do servidor de testes. Não há convidados de exemplo no aplicativo.
 
-| Dispositivo | Mapa com convidados | Seleção | Posicionamento com zoom |
-| --- | --- | --- | --- |
-| Desktop | [Mapa](screenshots/beach/desktop-populated.webp) | [Álbum](screenshots/beach/desktop-album.webp) | [Arraste](screenshots/beach/desktop-dragging.webp) |
-| Celular | [Mapa](screenshots/beach/mobile-populated.webp) | [Álbum](screenshots/beach/mobile-album.webp) | [Arraste](screenshots/beach/mobile-dragging.webp) |
+| Dispositivo | Praia vazia | Mapa com convidados | Seleção | Posicionamento com zoom |
+| --- | --- | --- | --- | --- |
+| Desktop | [Vista inicial](screenshots/beach/desktop-empty.webp) | [Mapa](screenshots/beach/desktop-populated.webp) | [Álbum](screenshots/beach/desktop-album.webp) | [Arraste](screenshots/beach/desktop-dragging.webp) |
+| Celular | [Vista inicial](screenshots/beach/mobile-empty.webp) | [Mapa](screenshots/beach/mobile-populated.webp) | [Álbum](screenshots/beach/mobile-album.webp) | [Arraste](screenshots/beach/mobile-dragging.webp) |
 
 `npm test` cobre conversão de coordenadas, limites, catálogo e atalhos de área. `npm run test:e2e` verifica a página existente. `npm run test:e2e:rsvp` exercita OAuth simulado, Server Actions, seleção, arraste com zoom, toque, teclado, falha e repetição da gravação, recarga e visibilidade em uma sessão separada. O teste de banco usa PostgreSQL e os grants, funções e políticas reais da aplicação.
 

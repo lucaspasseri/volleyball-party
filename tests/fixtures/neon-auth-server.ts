@@ -1,6 +1,7 @@
 // Test-only Managed Better Auth upstream. RSVP and sticker data use real PostgreSQL.
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
+import { placementAt, zones } from "../../lib/beach";
 import { Pool } from "pg";
 import { basename, isAbsolute } from "node:path";
 
@@ -77,12 +78,17 @@ function session(token: string, actor: string) {
 
 async function populateBeach() {
   const samples = [
-    ["Lia", "capita", "quadras", 0.27, 0.59],
-    ["Caio", "siri", "beira-mar", 0.49, 0.23],
-    ["Bia", "surfista", "gazebo", 0.75, 0.39],
-    ["Davi", "coco", "cadeiras", 0.68, 0.82],
+    ["Lia", "paredao", "quadras", 0],
+    ["Rafa", "foguete", "quadras", 1],
+    ["Caio", "capivara", "torcida", 0],
+    ["Bia", "surfista", "gazebo", 0],
+    ["Davi", "coco", "cadeiras", 0],
   ] as const;
-  for (const [name, sticker, zone, x, y] of samples) {
+  for (const [name, sticker, zone, index] of samples) {
+    const { x, y } = placementAt(
+      { ...zones[zone].anchors[index], zone_id: zone },
+      sticker,
+    );
     const actor = `sample-${name}`;
     await db.query("select pesca.save_rsvp($1,$2::jsonb,'')", [
       actor,

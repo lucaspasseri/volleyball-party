@@ -1,63 +1,125 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import {
-  bound,
-  dropPoint,
-  nearestZone,
+  destination,
+  feet,
+  nearbyAnchor,
+  placementAt,
   placementSchema,
+  playable,
   scenePoint,
-  suggestSpot,
   stickerIds,
+  suggestSpot,
+  zoneAt,
   zoneIds,
   zones,
 } from "../lib/beach";
-import { existsSync } from "node:fs";
 
-test("scene positions round-trip through scaled and scrolled art with an off-center grip", () => {
-  const point = { x: 0.35, y: 0.62 },
-    grip = { x: -0.012, y: 0.021 };
-  for (const rect of [
-    { left: 25, top: 70, width: 1200, height: 800 },
-    { left: -207, top: -55, width: 700, height: 700 / 1.5 },
-    { left: -450, top: -340, width: 2400, height: 1600 },
-  ]) {
-    const client = {
-      x: rect.left + (point.x + grip.x) * rect.width,
-      y: rect.top + (point.y + grip.y) * rect.height,
-    };
-    assert.deepEqual(dropPoint(client, rect, grip), point);
-    assert.deepEqual(scenePoint({ x: rect.left, y: rect.top }, rect), {
-      x: 0,
-      y: 0,
-    });
+test("the saved center restores the same feet after panning, zooming and resizing", () => {
+  for (const id of zoneIds) {
+    for (const sticker of stickerIds) {
+      const point = suggestSpot(id, []);
+      const saved = placementAt(point, sticker);
+      const ground = feet(
+        placementSchema.parse(JSON.parse(JSON.stringify(saved))),
+      );
+      assert.ok(Math.abs(ground.y - point.y) < 1e-12);
+      for (const rect of [
+        { left: 25, top: 70, width: 1200, height: 800 },
+        { left: 16, top: 30, width: 360, height: 240 },
+        { left: -207, top: -55, width: 720, height: 480 },
+      ]) {
+        const client = {
+          x: rect.left + ground.x * rect.width,
+          y: rect.top + ground.y * rect.height,
+        };
+        const actual = scenePoint(client, rect);
+        assert.ok(Math.abs(actual.x - point.x) < 1e-12);
+        assert.ok(Math.abs(actual.y - point.y) < 1e-12);
+      }
+    }
   }
 });
-test("the complete sticker stays inside the art at the edges", () => {
-  assert.deepEqual(bound({ x: -3, y: 2 }), { x: 0.03, y: 0.955 });
-  assert.deepEqual(bound({ x: 9, y: -0.05 }), { x: 0.97, y: 0.045 });
-  for (const id of zoneIds) assert.equal(nearestZone(zones[id]), id);
+
+test("each landmark's anchors fall within its painted area, including both courts", () => {
+  for (const id of zoneIds) {
+    for (const a of zones[id].anchors) {
+      assert.equal(zoneAt(a), id);
+      assert.deepEqual(playable(a), a);
+    }
+    const first = suggestSpot(id, []);
+    const next = suggestSpot(id, [first]);
+    assert.equal(next.zone_id, id);
+    assert.notDeepEqual(first, next);
+  }
+  assert.equal(zoneAt({ x: 0.33, y: 0.5 }), "beira-mar"); // gap between nets
+  assert.equal(zoneAt({ x: 0.51, y: 0.72 }), "beira-mar");
 });
-test("all allowed stickers have local artwork, and only catalogued placements pass validation", () => {
+
+test("a nearby free seat snaps, occupied seats and open sand allow fine placement", () => {
+  const seat = zones.cadeiras.anchors[0];
+  const close = { x: seat.x + 0.008, y: seat.y + 0.006 };
+  assert.deepEqual(nearbyAnchor(close, []), seat);
+  assert.deepEqual(destination(close, [], true), {
+    ...seat,
+    zone_id: "cadeiras",
+  });
+  assert.deepEqual(destination(close, [seat], true), {
+    ...close,
+    zone_id: "cadeiras",
+  });
+  assert.deepEqual(destination(close, [], false), {
+    ...close,
+    zone_id: "cadeiras",
+  });
+  const free = zones["beira-mar"].anchors[0];
+  assert.equal(nearbyAnchor(free, []), undefined);
+  assert.deepEqual(destination(free, [], true), {
+    ...free,
+    zone_id: "beira-mar",
+  });
+  const full = suggestSpot("cadeiras", zones.cadeiras.anchors);
+  assert.ok(
+    zones.cadeiras.anchors.every(
+      (a) => Math.hypot(full.x - a.x, full.y - a.y) > 0.04,
+    ),
+  );
+});
+
+test("out-of-bounds drops stay on sand and every converted center fits the database", () => {
+  for (const x of [-4, 0.32, 0.63, 0.85, 3]) {
+    for (const y of [-5, 0.5, 2]) {
+      const point = destination({ x, y }, [], true);
+      assert.ok(point.y > 0.2 && point.y < 0.95);
+      if (x >= 0.85) assert.ok(point.y > 0.38);
+      for (const sticker of stickerIds)
+        assert.ok(
+          placementSchema.safeParse(placementAt(point, sticker)).success,
+        );
+    }
+  }
+});
+test("all previous IDs and centers remain readable and invalid payloads are rejected", () => {
   for (const id of stickerIds)
     assert.ok(existsSync(`public/beach/stickers/${id}.webp`));
+  for (const id of zoneIds) {
+    assert.ok(
+      placementSchema.safeParse({
+        x: 0.03,
+        y: 0.045,
+        sticker_id: "siri",
+        zone_id: id,
+      }).success,
+    );
+  }
   const valid = { x: 0.4, y: 0.6, sticker_id: "siri", zone_id: "quadras" };
-  assert.ok(placementSchema.safeParse(valid).success);
   for (const invalid of [
     { guest_id: "another" },
     { x: Infinity },
     { y: 1 },
-    { sticker_id: "https://example.com" },
+    { sticker_id: "unknown" },
     { zone_id: null },
   ])
     assert.ok(!placementSchema.safeParse({ ...valid, ...invalid }).success);
-});
-
-test("zone shortcuts offer an open spot in the same area", () => {
-  for (const id of zoneIds) {
-    const first = suggestSpot(id, []);
-    assert.equal(nearestZone(first), id);
-    const second = suggestSpot(id, [first]);
-    assert.notDeepEqual(second, first);
-    assert.equal(nearestZone(second), id);
-  }
 });

@@ -150,65 +150,74 @@
   user-select: none;
   pointer-events: none;
 }
-.zone-pin {
+.beach-snap-target {
   position: absolute;
-  z-index: 2;
-  transform: translate(-50%, -105%);
-  width: 42px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  background: transparent;
-}
-.zone-pin span {
-  background: #fff9e8;
-  border: 2px solid var(--ink);
-  box-shadow:
-    0 2px 0 var(--ink),
-    0 3px 6px #243a3c50;
-  border-radius: 50% 50% 50% 6px;
-  display: grid;
-  width: 33px;
-  height: 33px;
-  place-items: center;
-}
-.zone-pin.chosen span {
-  background: var(--sun);
-}
-.zone-pin:hover,
-.zone-pin:focus-visible {
-  z-index: 6;
-}
-.beach-sticker-anchor {
-  position: absolute;
-  z-index: 3;
-  width: 6%;
-  height: 9%;
+  z-index: 1101;
+  width: 3.5%;
+  aspect-ratio: 3;
+  border-radius: 50%;
+  border: 2px solid #fff5d5;
+  background: #d99e4d70;
+  box-shadow: 0 0 0 1px #63442390;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+.beach-sticker-anchor {
+  position: absolute;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
 .beach-sticker-anchor button {
+  position: relative;
+  display: block;
   width: 100%;
   height: 100%;
   pointer-events: auto;
+  transform-origin: 50% var(--sole);
+}
+.beach-sticker-anchor button::before {
+  content: "";
+  position: absolute;
+  top: var(--sole);
+  left: 23%;
+  width: 54%;
+  height: 9%;
+  transform: translateY(-60%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #583c2880, transparent 72%);
+}
+.beach-sticker-anchor button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100%, 44px);
+  height: max(100%, 44px);
 }
 .beach-sticker-anchor img {
+  position: relative;
   height: 100%;
   width: 100%;
   object-fit: contain;
   user-select: none;
   pointer-events: none;
-  filter: drop-shadow(0 2px 2px #3c402865);
 }
 .draft-anchor {
-  z-index: 5;
+  z-index: 1102;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .draft-anchor {
+    transition: width 120ms ease-out;
+  }
 }
 .draft-sticker {
-  outline: 2px dashed var(--ink);
-  outline-offset: 2px;
-  border-radius: 50%;
-  background: #fff3cc66;
+  touch-action: none;
   cursor: grab !important;
+}
+.draft-sticker:focus-visible {
+  outline: 2px dashed var(--ink);
+  border-radius: 12%;
 }
 .draft-sticker:active {
   cursor: grabbing !important;
@@ -491,10 +500,9 @@
   container-type: inline-size;
 }
 .beach-camera {
-  height: max(66.667cqw, 466.667px);
+  height: 66.667cqw;
   max-height: none;
 }
-.zone-pin .zone-tag,
 .guest-tag {
   position: absolute;
   left: 50%;
@@ -515,9 +523,6 @@
 }
 .guest-tag {
   z-index: 6;
-}
-.beach-sticker-anchor:has(.guest-tag) {
-  z-index: 7;
 }
 @media (max-width: 700px) {
   .beach-camera {

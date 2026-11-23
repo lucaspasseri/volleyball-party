@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Armchair,
-  Binoculars,
+  Sofa,
   Crosshair,
   Footprints,
   Map,
@@ -14,38 +14,32 @@ import {
   Snowflake,
   Tent,
   Volleyball,
-  Waves,
+  Shell,
   X,
 } from "lucide-react";
 import {
-  bound,
+  destination,
+  feet,
   scenePoint,
   stickerNames,
   stickerSrc,
   zoneIds,
   zones,
+  type GroundPosition,
   type Placement,
   type Point,
   type SceneRow,
   type ZoneId,
 } from "@/lib/beach";
-import { DraftSticker } from "./scene-sticker";
+import { DraftSticker, stickerStyle } from "./scene-sticker";
 
-const reactions = {
-  quadras: { y: [0, -16, 0, -7, 0] },
-  gazebo: { rotate: [0, -10, 8, 0] },
-  coolers: { scale: [1, 0.85, 1.18, 1] },
-  cadeiras: { rotate: [0, 10, -7, 0] },
-  torcida: { y: [0, -6, 0, -6, 0] },
-  "beira-mar": { rotate: [0, -12, 12, 0] },
-};
 const icons = {
   quadras: Volleyball,
   gazebo: Tent,
   coolers: Snowflake,
   cadeiras: Armchair,
-  torcida: Binoculars,
-  "beira-mar": Waves,
+  torcida: Sofa,
+  "beira-mar": Shell,
 };
 export type CameraTarget = { point: Point };
 type Props = {
@@ -54,7 +48,9 @@ type Props = {
   active: ZoneId | null;
   focus: CameraTarget | null;
   onZone: (id: ZoneId) => void;
-  onMove: (p: Point) => void;
+  others: Point[];
+  pending: boolean;
+  onMove: (p: GroundPosition) => void;
   settled: boolean;
 };
 export function SceneViewport({
@@ -64,15 +60,15 @@ export function SceneViewport({
   focus,
   onZone,
   onMove,
+  others,
+  pending,
   settled,
 }: Props) {
   const stage = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
-  const [nearby, setNearby] = useState<ZoneId | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
-  const [beat, setBeat] = useState(0);
   const reduced = useReducedMotion();
   const center = (p: Point, smooth = false) => {
     const el = viewport.current!,
@@ -91,7 +87,13 @@ export function SceneViewport({
     }
   }, [zoom]); // The camera targets the same artwork point after changing its physical size.
   useEffect(() => {
-    if (focus) center(focus.point, true);
+    if (!focus) return;
+    if (viewport.current!.clientWidth < 600 && zoom === 1) {
+      zoomCenter.current = focus.point;
+      setZoom(2);
+    } else {
+      center(focus.point, true);
+    }
   }, [focus]);
   const changeZoom = (next: number) => {
     const el = viewport.current!,
@@ -104,7 +106,6 @@ export function SceneViewport({
   };
   const selectZone = (id: ZoneId) => {
     setGuestId(null);
-    setBeat((n) => n + 1);
     onZone(id);
   };
   const mine = draft ?? rows.find((r) => r.mine);
@@ -168,7 +169,7 @@ export function SceneViewport({
         <div
           ref={stage}
           className={`beach-stage${draft ? " is-placing" : ""}`}
-          style={{ width: `max(${zoom * 100}%, ${zoom * 700}px)` }}
+          style={{ width: zoom * 100 + "%" }}
           onPointerDown={(e) => {
             down.current = { x: e.clientX, y: e.clientY };
           }}
@@ -185,11 +186,13 @@ export function SceneViewport({
             setGuestId(null);
             if (draft)
               onMove(
-                bound(
+                destination(
                   scenePoint(
                     { x: e.clientX, y: e.clientY },
                     e.currentTarget.getBoundingClientRect(),
                   ),
+                  others,
+                  true,
                 ),
               );
           }}
@@ -215,7 +218,7 @@ export function SceneViewport({
               draggable={false}
               onLoad={() => setFailed(false)}
               onError={() => setFailed(true)}
-              alt="Festa ilustrada em Copacabana, com duas quadras, gazebo, cadeiras e banhistas junto ao mar."
+              alt="Praia de Copacabana com duas quadras à esquerda, gazebo listrado à direita, bancos e cadeiras na areia."
             />
           </picture>
           {failed && (
@@ -223,52 +226,32 @@ export function SceneViewport({
               A ilustração não carregou. Explore pelos nomes das áreas abaixo.
             </div>
           )}
-          {zoneIds.map((id) => {
-            const zone = zones[id],
-              Icon = icons[id],
-              chosen = (nearby ?? active) === id;
-            return (
-              <button
-                key={id}
-                className={`zone-pin${chosen ? " chosen" : ""}`}
-                style={{ left: zone.x * 100 + "%", top: zone.y * 100 + "%" }}
-                aria-label={`Explorar ${zone.name}`}
-                aria-pressed={chosen}
-                onClick={() => selectZone(id)}
-              >
-                <motion.span
-                  key={chosen ? beat : "idle"}
-                  whileHover={{ scale: 1.09 }}
-                  animate={
-                    chosen && beat && !reduced ? reactions[id] : { y: 0 }
-                  }
-                >
-                  <Icon size={19} />
-                </motion.span>
-                {chosen && !draft && !guest && (
-                  <span className="zone-tag">{zone.name}</span>
-                )}
-              </button>
-            );
-          })}
           {rows
             .filter((row) => !(row.mine && draft))
             .map((row) => (
               <div
                 key={row.id}
                 className="beach-sticker-anchor"
-                style={{ left: row.x * 100 + "%", top: row.y * 100 + "%" }}
+                style={{
+                  ...stickerStyle(row.zone_id, row.sticker_id),
+                  left: row.x * 100 + "%",
+                  top: feet(row).y * 100 + "%",
+                  zIndex:
+                    guestId === row.id ? 1100 : Math.round(feet(row).y * 1000),
+                }}
               >
                 <motion.button
                   className="placed-sticker"
                   aria-label={`Figurinha de ${row.name}`}
                   aria-expanded={guestId === row.id}
                   initial={
-                    row.mine && settled ? { scale: 0.65, rotate: -10 } : false
+                    row.mine && settled && !reduced
+                      ? { scale: 0.65, rotate: -10 }
+                      : false
                   }
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", damping: 10 }}
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={reduced ? undefined : { scale: 1.04 }}
                   onClick={() => {
                     setGuestId(guestId === row.id ? null : row.id);
                     center(row, true);
@@ -292,7 +275,8 @@ export function SceneViewport({
               draft={draft}
               stage={stage}
               onMove={onMove}
-              onNearby={setNearby}
+              others={others}
+              pending={pending}
             />
           )}
         </div>
@@ -303,6 +287,7 @@ export function SceneViewport({
           return (
             <button
               key={id}
+              disabled={pending}
               aria-pressed={active === id}
               onClick={() => selectZone(id)}
             >
@@ -350,9 +335,9 @@ export function SceneViewport({
               ) : (
                 <p>
                   <span className="beach-pan-hint">
-                    Deslize para explorar.{" "}
+                    Amplie para ver de perto.{" "}
                   </span>
-                  Toque nos símbolos para descobrir os cantinhos da festa.
+                  Escolha uma área para explorar a praia.
                 </p>
               )}
             </div>
