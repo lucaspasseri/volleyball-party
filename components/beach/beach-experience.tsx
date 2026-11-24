@@ -40,18 +40,18 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
     const previous = draft ?? own;
     const point = previous
       ? { ...feet(previous), zone_id: previous.zone_id }
-      : suggestSpot(zone_id, others);
+      : suggestSpot(zone_id, others, sticker_id);
     const next = placementAt(point, sticker_id);
     setDraft(next);
     setActive(next.zone_id);
-    setFocus({ point: next });
+    setFocus({ point: feet(next) });
     setAlbum(false);
     setMessage("");
     setSettled(false);
   }
   function chooseZone(zone_id: ZoneId) {
     const point = draft
-      ? suggestSpot(zone_id, others)
+      ? suggestSpot(zone_id, others, draft.sticker_id)
       : { ...zones[zone_id].anchors[0], zone_id };
     setActive(zone_id);
     setFocus({ point });

@@ -1,3 +1,4 @@
+import { adultWidth, beachDepth, depthOrder, perspectiveLimits, stickerProfile, stickerWidth } from "../lib/beach-perspective";
 import { tributeIds, tributes } from "../lib/tribute-stickers";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -21,6 +22,7 @@ import {
 import {
   stickerCollections,
   stickerIds,
+  stickers,
   stickerSrc,
 } from "../lib/stickers";
 
@@ -241,5 +243,62 @@ test("the reference manifest matches the SQL allowlist and published WebP artwor
       ["webp", 256, 256, true],
     );
     assert.equal((await sharp(entry.asset).stats()).isOpaque, false);
+  }
+});
+
+test("adult scale follows measured sloping depth lines and stays within its limits", () => {
+  const west = { x: 0, y: 515 / 1024 };
+  const east = { x: 1, y: 442 / 1024 };
+  assert.equal(beachDepth(west), beachDepth(east));
+  assert.equal(depthOrder(west), depthOrder(east));
+  assert.ok(beachDepth({ ...west, x: 1 }) > beachDepth(west));
+  for (const x of [0, .25, .5, .75, 1]) {
+    let previous = 0;
+    for (let y = 0; y <= 1; y += .001) {
+      const width = stickerWidth({ x, y }, "capita");
+      assert.ok(width >= previous);
+      if (previous > 0) assert.ok(width - previous < .001);
+      previous = width;
+    }
+  }
+  assert.equal(adultWidth(0), perspectiveLimits.min);
+  assert.equal(adultWidth(5), perspectiveLimits.max);
+  assert.equal(adultWidth(2, { min: .10, max: .12 }), .10);
+});
+
+test("pose, body size and airborne lift share a ground reference", () => {
+  const ground = { x: .3, y: .52 };
+  assert.ok(stickerProfile("hinata").anchor.y > 1);
+  assert.ok(stickerProfile("milho").anchor.y < stickerProfile("capita").anchor.y);
+  assert.equal(stickerProfile("crawl").shadowOpacity, 0);
+  assert.equal(stickerProfile("krillin").shadowOpacity, 0);
+  assert.ok(stickerWidth(ground, "siri") < stickerWidth(ground, "alison") / 3);
+  assert.deepEqual(feet({ x: .31, y: .45, zone_id: "quadras", sticker_id: "capita" }),
+    { x: .31, y: .45 + .068 * 1.5 * (250 / 256 - .5) });
+});
+
+test("a portable chair is suggested beside furniture and a cross-legged guest can take the seat", () => {
+  for (const zone of ["torcida", "cadeiras"] as const) {
+    const seated = suggestSpot(zone, [], "milho");
+    const portable = suggestSpot(zone, [], "roshi");
+    assert.notDeepEqual(seated, portable);
+    assert.equal(zoneAt(portable), zone);
+    assert.deepEqual(destination(portable, [], true, "roshi"), portable);
+    assert.deepEqual(destination(seated, [], false, "roshi"), seated);
+  }
+});
+
+test("depth ordering crosses the net at the ground point, even for an airborne player", () => {
+  const net = depthOrder({ x: 258 / 1536, y: 497 / 1024 });
+  assert.ok(depthOrder({ x: 170 / 1536, y: 462 / 1024 }) < net);
+  assert.ok(depthOrder({ x: 190 / 1536, y: 592 / 1024 }) > net);
+});
+
+test("the full catalog still finds distinct suggested places as the beach fills", () => {
+  const points: Point[] = [];
+  for (const id of stickerIds) {
+    const next = suggestSpot(stickers[id].zone, points, id);
+    assert.ok(points.every((point) => point.x !== next.x || point.y !== next.y));
+    points.push(next);
   }
 });

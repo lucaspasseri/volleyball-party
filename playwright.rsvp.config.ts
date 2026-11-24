@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const production = process.env.PLAYWRIGHT_RSVP_PRODUCTION === "1";
+
 export default defineConfig({
   outputDir: "test-results-rsvp",
   testDir: "./tests/e2e-rsvp",
@@ -20,12 +22,14 @@ export default defineConfig({
       reuseExistingServer: false,
     },
     {
-      command: "npm run dev -- --port 3101",
+      command: production
+        ? "npm run start -- --port 3101"
+        : "npm run dev -- --port 3101",
       url: "http://localhost:3101",
       reuseExistingServer: false,
       timeout: 120000,
       env: {
-        RSVP_TEST_DIST_DIR: ".next-rsvp-test",
+        RSVP_TEST_DIST_DIR: production ? ".next" : ".next-rsvp-test",
         NEON_AUTH_BASE_URL: "http://127.0.0.1:54326/test/auth",
         NEON_AUTH_COOKIE_SECRET: "test-cookie-secret-only-for-playwright",
         SITE_URL: "http://localhost:3101",

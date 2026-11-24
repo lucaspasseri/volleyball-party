@@ -8,7 +8,7 @@ A seção **Expectativas** abre um mapa de Copacabana com oito áreas exploráve
 | --- | --- | --- | --- |
 | [Copacabana](../public/beach/copacabana.webp) | Mapa detalhado e zoom | 1536 × 1024 | 383 KiB |
 | [Copacabana no celular](../public/beach/copacabana-small.webp) | Primeira vista em telas de até 700 px | 1000 × 667 | 174 KiB |
-| [Turma da praia (30)](../public/beach/stickers/) | Álbum, convidados e rascunho | 256 × 256 cada | 687 KiB no total |
+| [Turma da praia (30)](../public/beach/stickers/) | Álbum, convidados e rascunho | 256 × 256 cada | 660 KiB no total |
 | [Cultura pop (26)](../public/beach/stickers/) | Álbum, convidados e rascunho | 256 × 256 cada | 541 KiB no total |
 
 A ilustração e as figurinhas foram produzidas para o convite com o ImageGen integrado. O original do mapa tem 1536 px de largura, abaixo dos 3000 px sugeridos no brief. Os PNGs de origem ficam fora do diretório público. O navegador carrega o mapa sob demanda. O álbum tem um pacote JavaScript separado. A Turma da praia mantém os quatro filtros de atividade. Em Cultura pop, é possível ver todas as figurinhas ou filtrar por Anime, Esportes, Música e Cinema e games. As miniaturas da seleção atual carregam sob demanda. A caixa da cena reserva espaço antes de a imagem chegar. [Arte e prompt do mapa](art/copacabana.md) · [Inventário, folha original e prompt das figurinhas](art/stickers.md)
@@ -19,9 +19,9 @@ A arte, as áreas de interação e as figurinhas compartilham uma superfície de
 
 Os polígonos e os pontos sugeridos foram traçados sobre a ilustração de 1536 × 1024 e convertidos em frações. As duas quadras têm seis posições sugeridas ao todo. Há quatro lugares à sombra do gazebo branco, quatro ao redor dos coolers, três no banco comprido e um em cada uma das duas cadeiras sob o guarda-sol. O banco menor já tem um banhista pintado. O atalho dá preferência a um ponto desocupado. No arraste, um pequeno anel aparece junto a um ponto disponível e a figurinha se acomoda ali ao soltar. Em areia livre, ela fica onde foi solta. O mesmo editor aceita toque e setas do teclado, com Shift para um passo maior. Apenas **Guardar lugar** grava a alteração. [Geometria](../lib/beach.ts) · [Catálogo](../lib/stickers.ts)
 
-As posições de interação usam a borda inferior visível de cada desenho. O aplicativo converte esse ponto no centro do quadrado antes de salvar. Na leitura, faz a conversão inversa com a largura definida pela área e a margem transparente da figurinha. Assim, os centros normalizados e os seis identificadores de área já gravados continuam válidos sem recalcular as posições. O ID histórico `torcida` identifica os bancos e `beira-mar` identifica a areia livre. As áreas Mar e Calçadão têm pontos livres para banhistas e pedestres.
+Cada figura tem um apoio próprio na cena. Pés, quadril, rodas, linha da água e projeção do salto determinam a posição visual. O mapa interpola a escala entre linhas de profundidade traçadas sobre a pintura. A conversão histórica dos centros gravados continua em uso para recuperar o mesmo ponto na praia.
 
-A sombra e a ordem de desenho seguem o ponto de apoio. Como redes, bancos e cadeiras fazem parte da pintura, a ilustração não encobre partes da figurinha. As sugestões evitam sobreposições com convidados visíveis e a disponibilidade pode mudar com novas confirmações.
+Uma camada transparente recompõe partes das redes, gazebo, coolers, bancos, cadeiras e pedestres à frente de convidados mais distantes. O arraste e a seleção continuam acessíveis sobre esses recortes. O relatório reúne a leitura da câmera, as decisões para cada uma das 78 figurinhas, as capturas comparativas e as instruções para novas artes. [Perspectiva, auditoria e configuração](art/perspectiva.md)
 
 ## Persistência e privacidade
 
@@ -35,7 +35,7 @@ O comando de migração do ambiente instala o schema inicial e as atualizações
 
 ## Verificação
 
-As capturas abaixo usam convidados fictícios do servidor de testes. Não há convidados de exemplo no aplicativo.
+As capturas abaixo registram a versão anterior da interface com convidados fictícios do servidor de testes. A revisão de perspectiva inclui comparações nas mesmas posições e cenas com as sete coleções. [Comparação atual](art/perspectiva.md#comparação-visual)
 
 | Dispositivo | Praia sem figurinhas | Mapa com convidados | Seleção | Posicionamento com zoom |
 | --- | --- | --- | --- | --- |

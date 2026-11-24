@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Armchair,
@@ -31,6 +37,12 @@ import {
   type ZoneId,
 } from "@/lib/beach";
 import { stickers, stickerSrc } from "@/lib/stickers";
+import foreground from "@/lib/beach-foreground.json";
+import {
+  depthOrder,
+  stickerProfile,
+  stickerWidth,
+} from "@/lib/beach-perspective";
 import { DraftSticker, stickerStyle } from "./scene-sticker";
 
 const icons = {
@@ -70,7 +82,15 @@ export function SceneViewport({
   const viewport = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const [guestId, setGuestId] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [artState, setArtState] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+  const attachArt = useCallback((image: HTMLImageElement | null) => {
+    // A cached picture can finish loading before React hydrates the map.
+    if (image?.complete && image.currentSrc) {
+      setArtState(image.naturalWidth ? "ready" : "error");
+    }
+  }, []);
   const reduced = useReducedMotion();
   const center = (p: Point, smooth = false) => {
     const el = viewport.current!,
@@ -126,7 +146,7 @@ export function SceneViewport({
               className="beach-icon"
               title="Centralizar minha figurinha"
               aria-label="Centralizar minha figurinha"
-              onClick={() => center(mine, true)}
+              onClick={() => center(feet(mine), true)}
             >
               <Crosshair />
             </button>
@@ -195,6 +215,7 @@ export function SceneViewport({
                   ),
                   others,
                   true,
+                  draft.sticker_id,
                 ),
               );
           }}
@@ -207,6 +228,7 @@ export function SceneViewport({
               />
             )}
             <img
+              ref={attachArt}
               className="beach-art"
               src="/beach/copacabana.webp"
               srcSet="/beach/copacabana-small.webp 1000w, /beach/copacabana.webp 1536w"
@@ -218,29 +240,44 @@ export function SceneViewport({
               loading="lazy"
               decoding="async"
               draggable={false}
-              onLoad={() => setFailed(false)}
-              onError={() => setFailed(true)}
+              onLoad={() => setArtState("ready")}
+              onError={() => setArtState("error")}
               alt="Na praia de Copacabana, famílias passeiam à beira-mar. Amigos conversam entre as duas quadras e o gazebo branco com coolers. Há cadeiras de praia à direita, bancos à esquerda e pedestres no calçadão."
             />
           </picture>
-          {failed && (
+          {artState === "error" && (
             <div className="beach-image-error">
               A ilustração não carregou. Explore pelos nomes das áreas abaixo.
             </div>
           )}
+          {artState === "ready" &&
+            (rows.length > 0 || draft) &&
+            foreground.regions.map(({ id, x, y, w, h, top, contact }) => (
+              <span
+                key={id}
+                aria-hidden="true"
+                className="beach-foreground"
+                style={{
+                  left: (x / 1536) * 100 + "%",
+                  top: (y / 1024) * 100 + "%",
+                  width: (w / 1536) * 100 + "%",
+                  height: (h / 1024) * 100 + "%",
+                  backgroundSize: `${(foreground.width / w) * 100}% ${(foreground.height / h) * 100}%`,
+                  backgroundPosition: `0 ${(top / (foreground.height - h)) * 100}%`,
+                  zIndex: depthOrder({
+                    x: contact[0] / 1536,
+                    y: contact[1] / 1024,
+                  }),
+                }}
+              />
+            ))}
           {rows
             .filter((row) => !(row.mine && draft))
             .map((row) => (
               <div
                 key={row.id}
                 className="beach-sticker-anchor"
-                style={{
-                  ...stickerStyle(row.zone_id, row.sticker_id),
-                  left: row.x * 100 + "%",
-                  top: feet(row).y * 100 + "%",
-                  zIndex:
-                    guestId === row.id ? 1100 : Math.round(feet(row).y * 1000),
-                }}
+                style={stickerStyle(feet(row), row.sticker_id)}
               >
                 <motion.button
                   className="placed-sticker"
@@ -256,7 +293,7 @@ export function SceneViewport({
                   whileHover={reduced ? undefined : { scale: 1.04 }}
                   onClick={() => {
                     setGuestId(guestId === row.id ? null : row.id);
-                    center(row, true);
+                    center(feet(row), true);
                   }}
                 >
                   <img
@@ -265,13 +302,25 @@ export function SceneViewport({
                     draggable={false}
                   />
                 </motion.button>
-                {guest?.id === row.id && (
-                  <span className="guest-tag">
-                    {row.name} · {zones[row.zone_id].name}
-                  </span>
-                )}
               </div>
             ))}
+          {guest && (
+            <span
+              className="guest-tag"
+              style={{
+                left: guest.x * 100 + "%",
+                top:
+                  (feet(guest).y -
+                    1.5 *
+                      stickerWidth(feet(guest), guest.sticker_id) *
+                      stickerProfile(guest.sticker_id).anchor.y) *
+                    100 +
+                  "%",
+              }}
+            >
+              {guest.name} · {zones[guest.zone_id].name}
+            </span>
+          )}
           {draft && (
             <DraftSticker
               draft={draft}

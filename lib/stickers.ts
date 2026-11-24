@@ -56,7 +56,7 @@ const originals = {
     category: "praia-mar",
     zone: "quadras",
   },
-  surfista: { name: "Surfista", category: "praia-mar", zone: "quadras" },
+  surfista: { name: "Surfista", category: "praia-mar", zone: "beira-mar" },
   gaivota: { name: "Gaivota da orla", category: "praia-mar", zone: "quadras" },
   tchibum: { name: "Tchibum!", category: "praia-mar", zone: "mar" },
   crawl: { name: "De braçada", category: "praia-mar", zone: "mar" },
@@ -70,7 +70,7 @@ const originals = {
     category: "praia-mar",
     zone: "calcadao",
   },
-  soneca: { name: "Mestre da soneca", category: "sossego", zone: "quadras" },
+  soneca: { name: "Mestre da soneca", category: "sossego", zone: "cadeiras" },
   capivara: { name: "Capivara do sol", category: "sossego", zone: "quadras" },
   protetor: {
     name: "Passa o protetor",

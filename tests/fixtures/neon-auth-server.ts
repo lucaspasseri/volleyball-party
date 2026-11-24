@@ -5,6 +5,7 @@ import {
   placementAt,
   suggestSpot,
   zones,
+  zoneAt,
   type GroundPosition,
 } from "../../lib/beach";
 import { stickerIds, stickers, type StickerId } from "../../lib/stickers";
@@ -82,7 +83,7 @@ function session(token: string, actor: string) {
   };
 }
 
-async function populateBeach(crowded: boolean) {
+async function populateBeach(composition: boolean | "crowded" | "perspective") {
   const samples = [
     ["Lia", "paredao", "quadras", 0],
     ["Rafa", "foguete", "quadras", 1],
@@ -93,11 +94,30 @@ async function populateBeach(crowded: boolean) {
   ] as const;
   const guests: { name: string; sticker: StickerId; spot: GroundPosition }[] =
     [];
-  if (crowded) {
+  if (composition === "perspective") {
+    // Master-art coordinates keep comparisons repeatable as zone suggestions evolve.
+    const cast: [StickerId, number, number][] = [
+      ["crawl", 475, 207], ["tchibum", 693, 181],
+      ["capita", 330, 287], ["capita", 389, 523], ["capita", 316, 980],
+      ["hinata", 170, 462], ["nishinoya", 190, 592],
+      ["emanuel", 690, 465], ["bloqueio", 791, 554], ["levantadora", 652, 588],
+      ["brinde", 1370, 450], ["capita-do-coco", 1341, 526],
+      ["dj-do-isopor", 1460, 545], ["sanfona-de-sol", 1217, 405],
+      ["salva-vidas", 1309, 393], ["ronin-do-milho", 406, 851],
+      ["milho", 1101, 824], ["roshi", 865, 720],
+      ["siri", 171, 558], ["goku", 729, 517],
+    ];
+    for (const [sticker, x, y] of cast) {
+      const point = { x: x / 1536, y: y / 1024 };
+      guests.push({ name: `Praia ${guests.length + 1}`, sticker,
+        spot: { ...point, zone_id: zoneAt(point) } });
+    }
+  } else if (composition === "crowded") {
     for (const sticker of stickerIds) {
       const spot = suggestSpot(
         stickers[sticker].zone,
         guests.map((guest) => guest.spot),
+        sticker,
       );
       guests.push({ name: `Convidado ${guests.length + 1}`, sticker, spot });
     }
@@ -181,7 +201,7 @@ async function handle(
         [body.failSave ?? null, body.delaySave ?? null],
       );
       if (body.populateBeach)
-        await populateBeach(body.populateBeach === "crowded");
+        await populateBeach(body.populateBeach);
       return send({ ok: true });
     }
     case "/__state": {

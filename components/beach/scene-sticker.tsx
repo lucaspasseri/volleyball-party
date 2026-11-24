@@ -22,21 +22,59 @@ import {
   nearbyAnchor,
   playable,
   scenePoint,
-  sole,
-  zoneAt,
-  zones,
   type GroundPosition,
   type Placement,
   type Point,
-  type ZoneId,
 } from "@/lib/beach";
+import bounds from "@/lib/sticker-bounds.json";
+import {
+  canopyShade,
+  depthOrder,
+  stickerProfile,
+  stickerWidth,
+} from "@/lib/beach-perspective";
 import { stickers, stickerSrc, type StickerId } from "@/lib/stickers";
 
-export function stickerStyle(zone: ZoneId, sticker: StickerId): CSSProperties {
+const percent = (fraction: number) => fraction * 100 + "%";
+function profileStyle(id: StickerId): CSSProperties {
+  const { anchor, shadowWidth, shadowHeight, shadowOpacity } =
+    stickerProfile(id);
+  const [left, top, right, bottom] = (
+    bounds as Partial<Record<StickerId, number[]>>
+  )[id] ?? [0, 0, 256, 256];
   return {
-    width: zones[zone].width * 100 + "%",
-    transform: `translate(-50%, -${sole(sticker) * 100}%)`,
-    "--sole": sole(sticker) * 100 + "%",
+    "--hit-x": percent((left + right) / 512),
+    "--hit-y": percent((top + bottom) / 512),
+    "--hit-width": percent((right - left) / 256),
+    "--hit-height": percent((bottom - top) / 256),
+    transform: `translate(-${percent(anchor.x)}, -${percent(anchor.y)})`,
+    "--anchor-x": percent(anchor.x),
+    "--anchor-y": percent(anchor.y),
+    "--shadow-width": percent(shadowWidth),
+    "--shadow-height": percent(shadowHeight),
+    "--shadow-opacity": shadowOpacity,
+  } as CSSProperties;
+}
+function waterMask(point: Point, id: StickerId) {
+  const { pose, anchor } = stickerProfile(id);
+  if (pose !== "swimming") return "none";
+  const shoreline = (305 - 175 * point.x) / 1024;
+  // Let a swimmer emerge gradually over the last strip of wet sand.
+  const edge = anchor.y + 0.06 + Math.max(0, point.y - shoreline) * 16;
+  return `linear-gradient(black ${percent(edge - 0.025)}, transparent ${percent(edge + 0.025)})`;
+}
+function lighting(p: Point) {
+  return `saturate(.91) brightness(${1 - 0.115 * canopyShade(p)})`;
+}
+export function stickerStyle(point: Point, id: StickerId): CSSProperties {
+  return {
+    ...profileStyle(id),
+    left: percent(point.x),
+    top: percent(point.y),
+    width: percent(stickerWidth(point, id)),
+    zIndex: depthOrder(point),
+    "--sunlight": lighting(point),
+    "--water-mask": waterMask(point, id),
   } as CSSProperties;
 }
 
@@ -60,7 +98,16 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
     start: Point;
     moved: boolean;
   } | null>(null);
-  const [previewZone, setPreviewZone] = useState<ZoneId | null>(null);
+  const id = draft.sticker_id;
+  const width = useTransform(() =>
+    percent(stickerWidth({ x: x.get(), y: y.get() }, id)),
+  );
+  const zIndex = useTransform(() => depthOrder({ x: x.get(), y: y.get() }));
+  const light = useTransform(() => lighting({ x: x.get(), y: y.get() }));
+  const immersion = useTransform(() =>
+    waterMask({ x: x.get(), y: y.get() }, id),
+  );
+  const geometry = { ...profileStyle(id), left, top, width };
   const [candidate, setCandidate] = useState<Point | undefined>();
   const spring = useRef(false);
 
@@ -102,13 +149,12 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
     if (!drag || e.pointerId !== drag.id) return;
     if (!cancelled && drag.moved) {
       spring.current = true;
-      onMove(destination(pointerGround(e), others, true));
+      onMove(destination(pointerGround(e), others, true, id));
     } else {
       x.jump(ground.x);
       y.jump(ground.y);
     }
     grip.current = null;
-    setPreviewZone(null);
     setCandidate(undefined);
   }
   return (
@@ -124,19 +170,26 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
         />
       )}
       <motion.div
+        aria-hidden="true"
         className="beach-sticker-anchor draft-anchor"
-        style={{
-          ...stickerStyle(previewZone ?? draft.zone_id, draft.sticker_id),
-          left,
-          top,
-        }}
+        style={{ ...geometry, zIndex }}
       >
-        <motion.button
+        <motion.img
+          src={stickerSrc(id)}
+          style={{ filter: light, maskImage: immersion }}
+          alt=""
+          draggable={false}
+        />
+      </motion.div>
+      <motion.div
+        className="beach-sticker-anchor draft-control"
+        style={geometry}
+      >
+        <button
           type="button"
           disabled={pending}
-          aria-label={`Mover ${stickers[draft.sticker_id].name} com as setas`}
+          aria-label={`Mover ${stickers[id].name} com as setas`}
           className="draft-sticker"
-          animate={{ scale: previewZone && !reduced ? 1.035 : 1 }}
           onPointerDown={(e) => {
             if (!e.isPrimary || e.button !== 0 || grip.current) return;
             const start = { x: e.clientX, y: e.clientY };
@@ -163,8 +216,7 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
             const p = pointerGround(e);
             x.jump(p.x);
             y.jump(p.y);
-            setPreviewZone(zoneAt(p));
-            setCandidate(nearbyAnchor(p, others));
+            setCandidate(nearbyAnchor(p, others, id));
           }}
           onPointerUp={(e) => finish(e)}
           onLostPointerCapture={(e) => finish(e, true)}
@@ -185,12 +237,11 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
                 { x: ground.x + offset.x, y: ground.y + offset.y },
                 others,
                 false,
+                id,
               ),
             );
           }}
-        >
-          <img src={stickerSrc(draft.sticker_id)} alt="" draggable={false} />
-        </motion.button>
+        />
       </motion.div>
     </>
   );

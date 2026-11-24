@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { stickerProfile, stickerWidth } from "../../lib/beach-perspective";
 import { feet, zones } from "../../lib/beach";
 import { stickerCollections, stickerIds, stickers } from "../../lib/stickers";
 
@@ -7,7 +8,7 @@ const mock = "http://127.0.0.1:54326";
 test("a full beach renders all seven collections within the sticker transfer budget", async ({
   page,
   request,
-}) => {
+}, info) => {
   await request.post(mock + "/__reset");
   await request.post(mock + "/__control", {
     data: { populateBeach: "crowded" },
@@ -28,6 +29,19 @@ test("a full beach renders all seven collections within the sticker transfer bud
           sum + (entry as PerformanceResourceTiming).encodedBodySize,
         0,
       );
+  });
+  await map.locator(".beach-camera").scrollIntoViewIfNeeded();
+  await map.locator(".beach-art").evaluate((img: HTMLImageElement) => img.decode());
+  await map.locator(".beach-foreground").first().waitFor();
+  await page.evaluate(async () => {
+    const atlas = new Image();
+    atlas.src = "/beach/foreground.webp";
+    await atlas.decode();
+  });
+  await map.locator(".beach-camera").screenshot({
+    scale: "css",
+    style: ".skip-link:not(:focus), nextjs-portal { display: none !important }",
+    path: info.outputPath("crowded.png"),
   });
   expect(bytes).toBeGreaterThan(0);
   expect(bytes).toBeLessThan(2 * 1024 * 1024);
@@ -221,19 +235,21 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   for (const width of [viewport.width === 390 ? 900 : 390, viewport.width]) {
     await page.setViewportSize({ width, height: viewport.height });
     // Read both boxes in the same frame as the mobile viewport reflows.
-    const center = await own.evaluate((button) => {
+    const actual = await own.evaluate((button, anchor) => {
       const artBox = button
         .closest(".beach-stage")!
         .querySelector(".beach-art")!
         .getBoundingClientRect();
       const placed = button.getBoundingClientRect();
       return {
-        x: (placed.x + placed.width / 2 - artBox.x) / artBox.width,
-        y: (placed.y + placed.height / 2 - artBox.y) / artBox.height,
+        x: (placed.x + placed.width * anchor.x - artBox.x) / artBox.width,
+        y: (placed.y + placed.height * anchor.y - artBox.y) / artBox.height,
+        width: placed.width / artBox.width,
       };
-    });
-    expect(center.x).toBeCloseTo(saved.x, 3);
-    expect(center.y).toBeCloseTo(saved.y, 3);
+    }, stickerProfile(saved.sticker_id).anchor);
+    expect(actual.x).toBeCloseTo(feet(saved).x, 3);
+    expect(actual.y).toBeCloseTo(feet(saved).y, 3);
+    expect(actual.width).toBeCloseTo(stickerWidth(feet(saved), saved.sticker_id), 3);
   }
   await scene.getByRole("button", { name: "Editar meu lugar" }).click();
   await expect(
