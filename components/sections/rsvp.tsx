@@ -3,9 +3,14 @@ import { Reveal } from "@/components/motion/reveal";
 import { Volleyball } from "@/components/illustrations/beach";
 import { getRsvpView } from "@/lib/rsvp-data";
 import { RsvpExperience } from "@/components/ui/rsvp-experience";
-import type { ReactNode } from "react";
+import { Suspense } from "react";
 
-function RsvpShell({ children }: { children: ReactNode }) {
+async function RsvpForm({ authNotice }: { authNotice?: string }) {
+  const view = await getRsvpView();
+  return <RsvpExperience view={view} authNotice={authNotice} />;
+}
+
+export function Rsvp({ authNotice }: { authNotice?: string }) {
   return (
     <section
       id="presenca"
@@ -40,26 +45,17 @@ function RsvpShell({ children }: { children: ReactNode }) {
           <Volleyball className="rsvp-ball" />
         </Reveal>
         <Reveal className="rsvp-form-wrap" delay={0.12}>
-          {children}
+          <Suspense
+            fallback={
+              <div className="rsvp-form" role="status">
+                Preparando seu lugar ao sol…
+              </div>
+            }
+          >
+            <RsvpForm authNotice={authNotice} />
+          </Suspense>
         </Reveal>
       </div>
     </section>
-  );
-}
-export function RsvpLoading() {
-  return (
-    <RsvpShell>
-      <div className="rsvp-form" role="status">
-        Preparando seu lugar ao sol…
-      </div>
-    </RsvpShell>
-  );
-}
-export async function Rsvp({ authNotice }: { authNotice?: string }) {
-  const view = await getRsvpView();
-  return (
-    <RsvpShell>
-      <RsvpExperience view={view} authNotice={authNotice} />
-    </RsvpShell>
   );
 }

@@ -103,6 +103,58 @@ test("hero navigation and calendar download work", async ({ page }) => {
   await expect(page.locator("#rsvp-heading")).toBeInViewport();
 });
 
+test("section links frame their incoming waves and flat edges", async ({ page }) => {
+  const menu = page.getByRole("button", { name: "Abrir menu" });
+  const mobile = await menu.isVisible();
+  const nav = page.locator(mobile ? "#mobile-nav" : ".desktop-nav");
+  for (const id of ["quando", "como", "onde"]) {
+    if (mobile) await menu.click();
+    await nav.locator(`a[href="#${id}"]`).click();
+    if (mobile) await expect(nav).toHaveCount(0);
+
+    const section = page.locator(`#${id}`);
+    await expect(section.getByRole("heading", { level: 2 })).toBeInViewport({
+      ratio: 1,
+    });
+    if (id === "onde") {
+      await expect
+        .poll(() => section.evaluate(el => Math.abs(el.getBoundingClientRect().top)))
+        .toBeLessThan(2);
+    } else {
+      const wave = page.locator(id === "quando" ? ".hero-wave" : ".how-wave");
+      // The hero clips the bottom pixel of its SVG to hide the seam.
+      await expect(wave).toBeInViewport({ ratio: 0.95 });
+      await expect
+        .poll(() => wave.evaluate(el => el.getBoundingClientRect().top))
+        .toBeLessThan(18);
+    }
+  }
+});
+
+test("a fresh Onde deep link stays aligned as the weather loads", async ({ page }) => {
+  let releaseWeather!: () => void;
+  const pendingWeather = new Promise<void>(resolve => {
+    releaseWeather = resolve;
+  });
+  await page.route("**/api/weather", async route => {
+    await pendingWeather;
+    await route.fallback();
+  });
+  const top = () => page.locator("#onde").evaluate(
+    el => Math.abs(el.getBoundingClientRect().top),
+  );
+  try {
+    // Load a new document so this exercises initial fragment positioning.
+    await page.goto("about:blank");
+    await page.goto("/#onde", { waitUntil: "domcontentloaded" });
+    await expect.poll(top).toBeLessThan(2);
+  } finally {
+    releaseWeather();
+  }
+  await expect(page.locator(".weather-value")).toBeAttached();
+  await expect.poll(top).toBeLessThan(2);
+});
+
 test("weather errors are readable without made-up temperatures", async ({
   page,
 }) => {

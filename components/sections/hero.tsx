@@ -23,7 +23,8 @@ export function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 65]);
+  // Scale the drift with the artwork so its caption stays clear of the wave on phones.
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", reduced ? "0%" : "8%"]);
   return (
     <section
       id="inicio"
