@@ -112,7 +112,7 @@ Os testes de banco e de RSVP precisam de `initdb`, `pg_ctl` e `psql` no PATH. Ca
 ## Funcionalidades e limitações
 
 - **Marco 2 implementado:** Google OAuth via Neon Auth, Server Actions e Neon PostgreSQL, RSVP privado por padrão, consentimentos separados para nome/foto, lista e contagens, moderação e CSV em `/organizador`. Configuração e verificação em [docs/RSVP.md](docs/RSVP.md). Sem credenciais, a seção explica que as confirmações estão sendo preparadas.
-- O mapa ilustrado de Copacabana tem oito áreas e um álbum com 78 figurinhas públicas em sete coleções. Convidados confirmados guardam e ajustam seu lugar na areia. [Migração, coordenadas, inventário de arte e capturas](docs/PRAIA.md).
+- O mapa ilustrado de Copacabana tem oito áreas e um álbum com 78 figurinhas públicas em sete coleções e a coleção **Meu personagem**, com 20 poses personalizáveis. [Fotos, consentimento e capturas](docs/PERSONAGENS.md). Convidados confirmados guardam e ajustam seu lugar na areia. [Migração, coordenadas, inventário de arte e capturas](docs/PRAIA.md).
 - O posto e as barracas ainda não foram definidos. Não há nomes ou ponto de encontro inventados.
 - O clima depende da disponibilidade e dos limites do Open-Meteo; previsão distante não é garantida e pode mudar.
 - O convite de produção está hospedado na Netlify. [Vôlei do Pesca](https://volleyball-party.netlify.app/)

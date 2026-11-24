@@ -33,15 +33,23 @@ import {
   stickerProfile,
   stickerWidth,
 } from "@/lib/beach-perspective";
-import { stickers, stickerSrc, type StickerId } from "@/lib/stickers";
+import {
+  isCharacter,
+  template,
+  sceneSticker,
+  type SceneStickerId as StickerId,
+} from "@/lib/characters";
+import { StickerArt } from "./sticker-art";
 
 const percent = (fraction: number) => fraction * 100 + "%";
 function profileStyle(id: StickerId): CSSProperties {
   const { anchor, shadowWidth, shadowHeight, shadowOpacity } =
     stickerProfile(id);
-  const [left, top, right, bottom] = (
-    bounds as Partial<Record<StickerId, number[]>>
-  )[id] ?? [0, 0, 256, 256];
+  const [left, top, right, bottom] = isCharacter(id)
+    ? template(id).bounds
+    : ((bounds as Partial<Record<StickerId, number[]>>)[id] ?? [
+        0, 0, 256, 256,
+      ]);
   return {
     "--hit-x": percent((left + right) / 512),
     "--hit-y": percent((top + bottom) / 512),
@@ -174,12 +182,12 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
         className="beach-sticker-anchor draft-anchor"
         style={{ ...geometry, zIndex }}
       >
-        <motion.img
-          src={stickerSrc(id)}
+        <motion.div
+          className="draft-art"
           style={{ filter: light, maskImage: immersion }}
-          alt=""
-          draggable={false}
-        />
+        >
+          <StickerArt id={id} {...draft.character} />
+        </motion.div>
       </motion.div>
       <motion.div
         className="beach-sticker-anchor draft-control"
@@ -188,7 +196,7 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
         <button
           type="button"
           disabled={pending}
-          aria-label={`Mover ${stickers[id].name} com as setas`}
+          aria-label={`Mover ${sceneSticker(id).name} com as setas`}
           className="draft-sticker"
           onPointerDown={(e) => {
             if (!e.isPrimary || e.button !== 0 || grip.current) return;

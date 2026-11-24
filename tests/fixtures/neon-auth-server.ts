@@ -183,7 +183,7 @@ async function handle(
       return send({ ok: true });
     case "/__reset":
       await db.query(
-        "truncate pesca.guest_profiles, pesca.rsvps, pesca.sticker_placements, pesca.mutation_limits; update pesca.test_controls set fail_save=false, delay_save=0",
+        "truncate pesca.character_photos, pesca.guest_profiles, pesca.rsvps, pesca.sticker_placements, pesca.mutation_limits; update pesca.test_controls set fail_save=false, delay_save=0",
       );
       tokens.clear();
       challenges.clear();

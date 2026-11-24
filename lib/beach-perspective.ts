@@ -1,4 +1,5 @@
 import type { Point } from "./beach";
+import { isCharacter, template, type SceneStickerId } from "./characters";
 import type { StickerId } from "./stickers";
 
 // Each row describes a transverse line on the published 1536 × 1024 painting.
@@ -147,12 +148,15 @@ const profiles: Partial<Record<StickerId, Profile>> = {
 };
 
 const defaultProfile = at("standing", 0.5, 0.95);
-export function stickerProfile(id: StickerId) {
-  const { pose, x, y, size, paintedShadow } = profiles[id] ?? defaultProfile;
+export function stickerProfile(id: SceneStickerId) {
+  const body = isCharacter(id) ? template(id) : null;
+  const reference = isCharacter(id) ? template(id).reference : id;
+  const { pose, x, y, size, paintedShadow } =
+    profiles[reference] ?? defaultProfile;
   const { width, elevation, shadow } = poses[pose];
   return {
     pose,
-    anchor: { x, y: y + elevation },
+    anchor: { x: body?.ground.x ?? x, y: (body?.ground.y ?? y) + elevation },
     size: size ?? width,
     shadowWidth: shadow[0],
     shadowHeight: shadow[1],
@@ -169,6 +173,6 @@ export function canopyShade({ x, y }: Point) {
   const inside = Math.min(px - 1100, 1474 - px, py - back, front - py);
   return Math.max(0, Math.min(1, (inside + 8) / 16));
 }
-export function stickerWidth(point: Point, id: StickerId) {
+export function stickerWidth(point: Point, id: SceneStickerId) {
   return adultWidth(beachDepth(point)) * stickerProfile(id).size;
 }

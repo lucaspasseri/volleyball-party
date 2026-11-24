@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Check, MapPin, Sticker, UsersRound } from "lucide-react";
 import { saveBeachSticker } from "@/app/actions/beach";
@@ -14,17 +15,34 @@ import {
   type SceneRow,
   type ZoneId,
 } from "@/lib/beach";
-import { stickers, stickerSrc, type StickerId } from "@/lib/stickers";
+import {
+  sceneSticker,
+  type SceneStickerId,
+  type Photo,
+  type Character,
+} from "@/lib/characters";
+import { StickerArt } from "./sticker-art";
 import { SceneViewport, type CameraTarget } from "./scene-viewport";
 
 const Gallery = dynamic(() => import("./sticker-gallery"));
 type Props = {
   rows: SceneRow[];
+  photo: Photo | null;
+  hasProfilePhoto: boolean;
   canEdit: boolean;
   shared: boolean;
   unavailable: boolean;
 };
-export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
+export function BeachExperience({
+  rows,
+  canEdit,
+  shared,
+  unavailable,
+  photo,
+  hasProfilePhoto,
+}: Props) {
+  const router = useRouter();
+  const [confirmed, setConfirmed] = useState(false);
   const own = rows.find((r) => r.mine);
   const [album, setAlbum] = useState(false);
   const [draft, setDraft] = useState<Placement | null>(null);
@@ -35,14 +53,15 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   const [settled, setSettled] = useState(false);
   const count = rows.filter((r) => r.shared).length;
   const others = rows.filter((row) => !row.mine).map(feet);
-  function pick(sticker_id: StickerId) {
-    const zone_id = active ?? own?.zone_id ?? stickers[sticker_id].zone;
+  function pick(sticker_id: SceneStickerId, character?: Character) {
+    const zone_id = active ?? own?.zone_id ?? sceneSticker(sticker_id).zone;
     const previous = draft ?? own;
     const point = previous
       ? { ...feet(previous), zone_id: previous.zone_id }
       : suggestSpot(zone_id, others, sticker_id);
     const next = placementAt(point, sticker_id);
-    setDraft(next);
+    setDraft({ ...next, character });
+    setConfirmed(false);
     setActive(next.zone_id);
     setFocus({ point: feet(next) });
     setAlbum(false);
@@ -59,7 +78,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   }
   function move(point: GroundPosition) {
     if (!draft || pending) return;
-    setDraft(placementAt(point, draft.sticker_id));
+    setDraft({ ...draft, ...placementAt(point, draft.sticker_id) });
     setActive(point.zone_id);
     setMessage("");
   }
@@ -67,7 +86,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
     if (!draft || pending) return;
     setPending(true);
     try {
-      const result = await saveBeachSticker(draft);
+      const result = await saveBeachSticker(draft, confirmed);
       setMessage(result.message);
       if (result.ok) {
         setDraft(null);
@@ -109,15 +128,21 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
       </div>
       {draft && canEdit && (
         <div className="beach-editor">
-          <img
-            src={stickerSrc(draft.sticker_id)}
-            width="58"
-            height="58"
-            alt=""
-          />
+          <StickerArt id={draft.sticker_id} {...draft.character} size={58} />
           <div>
-            <strong>{stickers[draft.sticker_id].name}</strong>
+            <strong>{sceneSticker(draft.sticker_id).name}</strong>
             <p>Escolha uma área, toque no mapa ou arraste sua figurinha.</p>
+            {draft.character && (
+              <label className="character-consent">
+                <input
+                  type="checkbox"
+                  checked={confirmed}
+                  onChange={(e) => setConfirmed(e.target.checked)}
+                />
+                Ao adicionar seu personagem ao cenário, sua foto ficará visível
+                para os outros convidados.
+              </label>
+            )}
             <small>
               {shared
                 ? "Seu primeiro nome e sua figurinha ficarão visíveis na praia."
@@ -127,7 +152,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
           <div className="editor-buttons">
             <button
               className="button button-small"
-              disabled={pending}
+              disabled={pending || Boolean(draft.character && !confirmed)}
               onClick={save}
             >
               <Check size={17} />
@@ -180,6 +205,14 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
         <Gallery
           initial={draft?.sticker_id ?? own?.sticker_id ?? "levantadora"}
           canEdit={canEdit}
+          initialCharacter={(draft ?? own)?.character}
+          photo={photo}
+          hasProfilePhoto={hasProfilePhoto}
+          onPhotoChange={() => {
+            if (draft?.character) setDraft(null);
+            setMessage("");
+            router.refresh();
+          }}
           onPick={pick}
           onClose={() => setAlbum(false)}
         />

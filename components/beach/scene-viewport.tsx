@@ -36,7 +36,8 @@ import {
   type SceneRow,
   type ZoneId,
 } from "@/lib/beach";
-import { stickers, stickerSrc } from "@/lib/stickers";
+import { sceneSticker } from "@/lib/characters";
+import { StickerArt } from "./sticker-art";
 import foreground from "@/lib/beach-foreground.json";
 import {
   depthOrder,
@@ -296,11 +297,7 @@ export function SceneViewport({
                     center(feet(row), true);
                   }}
                 >
-                  <img
-                    src={stickerSrc(row.sticker_id)}
-                    alt=""
-                    draggable={false}
-                  />
+                  <StickerArt id={row.sticker_id} {...row.character} />
                 </motion.button>
               </div>
             ))}
@@ -351,19 +348,15 @@ export function SceneViewport({
       <div className="beach-discovery" aria-live="polite">
         {guest ? (
           <>
-            <img
-              src={stickerSrc(guest.sticker_id)}
-              width="46"
-              height="46"
-              alt=""
-            />
+            <StickerArt id={guest.sticker_id} {...guest.character} size={46} />
             <div>
               <strong>
                 {guest.name}
                 {guest.mine && " · você"}
               </strong>
               <p>
-                {stickers[guest.sticker_id].name} · {zones[guest.zone_id].name}
+                {sceneSticker(guest.sticker_id).name} ·{" "}
+                {zones[guest.zone_id].name}
               </p>
             </div>
             <button

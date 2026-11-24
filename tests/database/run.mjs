@@ -83,6 +83,8 @@ try {
       "tests/database/rsvp.sql",
       "-f",
       "tests/database/beach.sql",
+      "-f",
+      "tests/database/characters.sql",
     ]);
   }
 } finally {

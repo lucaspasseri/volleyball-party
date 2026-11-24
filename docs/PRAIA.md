@@ -2,6 +2,8 @@
 
 A seção **Expectativas** abre um mapa de Copacabana com oito áreas exploráveis. Qualquer visitante pode abrir o álbum e descobrir as atividades. Depois de responder **Vou**, o convidado pode guardar uma figurinha e voltar para mudar sua escolha.
 
+A coleção **Meu personagem** permite combinar uma foto autorizada com 20 poses e guardar o resultado no mesmo mapa. [Fluxo, privacidade e capturas](PERSONAGENS.md)
+
 ## Arte e carregamento
 
 | Arquivo | Uso | Dimensões | Tamanho |

@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 import { stickerProfile, stickerWidth } from "./beach-perspective";
-import { stickerIds, type StickerId } from "./stickers";
+import {
+  characterSchema,
+  isCharacter,
+  sceneStickerIds,
+  type SceneStickerId as StickerId,
+} from "./characters";
 
 export type Point = { x: number; y: number };
 export type Rect = { left: number; top: number; width: number; height: number };
@@ -255,8 +260,9 @@ export function destination(
   const target = (snap && nearbyAnchor(p, others, sticker)) || p;
   return { ...target, zone_id: zoneAt(target) };
 }
-export const placementSchema = z.strictObject({
-  sticker_id: z.enum(stickerIds),
+const placementFields = z.strictObject({
+  character: characterSchema.optional(),
+  sticker_id: z.enum(sceneStickerIds),
   zone_id: z.enum(zoneIds),
   x: z
     .number()
@@ -267,13 +273,19 @@ export const placementSchema = z.strictObject({
     .min(inset.y)
     .max(1 - inset.y),
 });
+function validComposition(p: z.infer<typeof placementFields>) {
+  return isCharacter(p.sticker_id) === Boolean(p.character);
+}
+export const placementSchema = placementFields.refine(validComposition);
 export type Placement = z.infer<typeof placementSchema>;
 export const sceneRowsSchema = z.array(
-  placementSchema.extend({
-    id: z.uuid(),
-    name: z.string().max(40),
-    mine: z.boolean(),
-    shared: z.boolean(),
-  }),
+  placementFields
+    .extend({
+      id: z.uuid(),
+      name: z.string().max(40),
+      mine: z.boolean(),
+      shared: z.boolean(),
+    })
+    .refine(validComposition),
 );
 export type SceneRow = z.infer<typeof sceneRowsSchema>[number];
