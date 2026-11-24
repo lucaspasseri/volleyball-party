@@ -1,5 +1,3 @@
-begin;
-
 alter table pesca.sticker_placements
   drop constraint sticker_placements_sticker_id_check,
   add constraint sticker_placements_sticker_id_check check (sticker_id in (
@@ -18,5 +16,3 @@ alter table pesca.sticker_placements
     'rap-do-picole', 'rainha-do-tambor', 'astronauta-de-boia', 'detetive-de-canga',
     'chef-do-arcade', 'vampira-do-sol', 'monstro-da-selfie', 'cavaleira-do-fliper'
   ));
-
-commit;

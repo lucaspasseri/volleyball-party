@@ -1,4 +1,3 @@
-begin;
 create schema if not exists extensions;
 create extension if not exists pgcrypto with schema extensions;
 create schema pesca;
@@ -229,4 +228,3 @@ grant execute on function
   pesca.save_rsvp(text,jsonb,text), pesca.moderate_rsvp(text,uuid,boolean),
   pesca.save_beach_sticker(text,text,text,numeric,numeric), pesca.beach_scene(text)
 to pesca_runtime;
-commit;

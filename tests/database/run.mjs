@@ -10,8 +10,8 @@ let child;
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () => child?.kill(signal));
 }
-function run(command, args) {
-  const result = spawnSync(command, args, { stdio: "inherit" });
+function run(command, args, env = process.env) {
+  const result = spawnSync(command, args, { stdio: "inherit", env });
   if (result.error) throw result.error;
   if (result.status !== 0)
     throw new Error(`${command} exited with ${result.status}`);
@@ -44,13 +44,11 @@ try {
     "ON_ERROR_STOP=1",
     "-f",
     "tests/database/bootstrap.sql",
-    "-f",
-    "db/001_initial.sql",
-    "-f",
-    "db/002_beach_collection.sql",
-    "-f",
-    "db/003_pop_culture.sql",
   ]);
+  run(process.execPath, ["scripts/migrate.mjs", "dev"], {
+    ...process.env,
+    DEV_ADMIN_DATABASE_URL: url("pesca_test_owner"),
+  });
   if (process.argv[2] === "--e2e") {
     child = spawn(
       process.execPath,

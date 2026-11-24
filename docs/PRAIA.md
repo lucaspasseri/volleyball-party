@@ -25,10 +25,10 @@ A sombra e a ordem de desenho seguem o ponto de apoio. Como redes, bancos e cade
 
 ## Persistência e privacidade
 
-Em um banco novo, aplique o [schema inicial](../db/001_initial.sql), a [migração do álbum](../db/002_beach_collection.sql) e a [migração de Cultura pop](../db/003_pop_culture.sql), nessa ordem. Em bancos existentes, aplique as migrações pendentes antes de publicar a nova versão. O mapa e o álbum funcionam localmente sem credenciais. A gravação e a leitura de participantes usam o PostgreSQL e as sessões do Neon Auth. [Configuração do Neon](../README.md#configuração-do-neon)
+O comando de migração do ambiente instala o schema inicial e as atualizações do catálogo em ordem. Aplique as migrações pendentes antes de publicar a nova versão. O mapa e o álbum funcionam localmente sem credenciais. A gravação e a leitura de participantes usam o PostgreSQL e as sessões do Neon Auth. [Migrações e publicação](../README.md#migrações-e-publicação)
 
 - A tabela `sticker_placements` mantém uma linha por convidado e cena. Constraints validam o catálogo, a área e os limites da posição. O ID público da figurinha é independente do ID da conta.
-- A Server Action verifica a sessão. O RPC `save_beach_sticker` deriva o proprietário de `auth.uid()`, verifica e bloqueia a linha de RSVP durante a gravação e faz upsert. Somente quem respondeu `going` e está visível para a moderação pode salvar. O limite é de 20 chamadas por minuto por convidado elegível.
+- A Server Action verifica a sessão e passa o ID do convidado à função `save_beach_sticker`. A função verifica e bloqueia a linha de RSVP durante a gravação e faz upsert. Somente quem respondeu `going` e está visível para a moderação pode salvar. O limite é de 20 chamadas por minuto por convidado elegível.
 - O login do app pode executar somente as funções concedidas. A leitura direta das tabelas fica restrita à administração do banco. A função `beach_scene` devolve somente primeiro nome, figurinha, ponto, área e os indicadores usados pela interface.
 - O consentimento de primeiro nome controla a visibilidade pública. Com a resposta privada, somente o próprio convidado vê sua figurinha no mapa. A interface informa o alcance antes da gravação.
 - Uma alteração para `maybe` ou `not_going`, a retirada de consentimento ou a moderação no painel do organizador afeta a próxima leitura. A posição permanece guardada para uma futura confirmação. Os visitantes atualizam a página para ver mudanças de outras pessoas.

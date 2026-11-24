@@ -46,18 +46,15 @@ O convite abre em modo de prévia com as variáveis de banco e autenticação em
 
 1. Crie um projeto no [Neon Console](https://console.neon.tech) e selecione a branch e o banco destinados ao convite. Use a mesma branch e o mesmo banco para o PostgreSQL da aplicação e o Managed Better Auth.
 2. Na branch, abra **Auth → Configuration**, habilite **Managed Better Auth** e copie o Auth URL completo, incluindo o caminho.
-3. Em **Connect**, copie a conexão direta do proprietário do banco e abra-a no `psql` a partir da raiz do repositório. Gere uma senha aleatória e substitua o valor de exemplo abaixo. O `psql` mantém o histórico dessa sessão fora do disco.
+3. Em um banco novo, abra a conexão direta do proprietário no `psql`. Crie o login da aplicação e defina a senha no prompt do `psql`.
 
    ```sql
-   \set HISTFILE /dev/null
-   CREATE ROLE pesca_runtime WITH LOGIN PASSWORD 'SUBSTITUA-PELA-SENHA-ALEATORIA';
+   CREATE ROLE pesca_runtime LOGIN;
+   \password pesca_runtime
    SELECT format('GRANT CONNECT ON DATABASE %I TO pesca_runtime', current_database()) \gexec
-   \i db/001_initial.sql
-   \i db/002_beach_collection.sql
-   \i db/003_pop_culture.sql
    ```
 
-   A instalação do schema é transacional e deve ser executada uma vez por banco novo. Crie `pesca_runtime` via SQL para que o login tenha apenas os privilégios concedidos pela instalação. Use a conexão do proprietário apenas para inicialização e administração. Em bancos existentes, aplique as migrações pendentes em ordem numérica antes de publicar o novo catálogo. [Privilégios de roles na Neon](https://neon.com/docs/manage/roles)
+   Em seguida, execute o comando de migração do ambiente. Ele cria o schema, as funções, os privilégios e a configuração inicial do convite. [Migrações e publicação](#migrações-e-publicação)
 
 4. Use `.env.example` como modelo para `.env.local`. Configure estas variáveis no ambiente do servidor, localmente e na hospedagem.
 
@@ -77,6 +74,24 @@ O fluxo usa o SDK `@neon/auth` para Next.js e `pg` no servidor para SQL parametr
 **Open-Meteo:** consulta coordenadas gerais de Copacabana. A requisição solicita condições atuais e até 16 dias de previsão; o servidor reutiliza a resposta por 30 minutos com `next.revalidate`. A previsão da festa aparece somente se a API incluir uma linha completa para a data do evento e o evento ainda não tiver passado. Antes disso, o widget indica explicitamente “Condições atuais”, mostra a hora da observação no fuso do evento e explica a diferença. Falhas de rede, timeout e dados incompletos produzem uma mensagem sem temperaturas inventadas. A página inicial não espera pela API para carregar. Atribuição e link ao provedor estão no widget.
 
 **Google Maps:** iframe carregado sob demanda e link externo, sem chave de API. Enquanto `meetingPoint` for `null`, a interface sinaliza mapa geral e ponto a definir. Para finalizar, edite `event.location.meetingPoint`, `nearbyReferences`, `coordinates` e `mapsUrl`. O iframe passará a usar as coordenadas exatas. O mapa depende da disponibilidade do Google e pode ser bloqueado por rede ou extensões; o link externo continua disponível.
+
+### Migrações e publicação
+
+Os arquivos numerados em `db/` são a fonte de verdade para todos os ambientes. Antes de publicar uma versão que depende de uma mudança de banco, execute o comando correspondente na raiz do projeto.
+
+| Ambiente | Credencial administrativa direta | Comando |
+| --- | --- | --- |
+| Desenvolvimento | Exporte `DEV_ADMIN_DATABASE_URL` para o banco local ou a branch de desenvolvimento. | `npm run db:migrate:dev` |
+| Produção | Configure `ADMIN_DATABASE_URL` no ambiente administrativo ou no arquivo local ignorado `.env.admin`. | `npm run db:migrate:production` |
+
+O comando de produção confere o projeto Neon `quiet-waterfall-79162856`, a branch `br-fragrant-lake-be7ise18` e o banco `neondb` na conexão aberta. O comando de desenvolvimento recusa esse destino. Se o banco de produção mudar, confirme os novos identificadores no Neon e atualize a verificação em `scripts/migrate.mjs` na mesma revisão. Reserve as credenciais administrativas para as migrações. O servidor Next.js usa `DATABASE_URL` com o login `pesca_runtime`.
+
+1. Para uma mudança, acrescente o próximo arquivo `NNN_nome.sql` em sequência. Use SQL compatível com uma única transação e deixe o controle de transação para o executor. Preserve o conteúdo dos arquivos já aplicados.
+2. Execute `npm run test:db` em um PostgreSQL descartável e `npm run test:e2e:rsvp` para os fluxos do convite. Os dois comandos inicializam o banco com o mesmo executor da produção.
+3. Aplique a migração em desenvolvimento e depois em produção. O executor serializa as execuções e grava nomes e checksums SHA-256 em `pesca.schema_migrations` na mesma transação das mudanças. Uma repetição bem-sucedida confirma que o histórico está em dia. Os comandos de build e de início do servidor são independentes.
+4. Verifique o comportamento afetado com o login da aplicação antes de liberar a versão. Para mudanças estruturais, compare um `pg_dump --schema-only --schema=pesca` do destino com o de uma instalação limpa. Use a mesma versão do cliente e o mesmo nome de proprietário para comparar também privilégios e donos. [Verificação de RSVP no ambiente hospedado](docs/RSVP.md#verificação-no-ambiente-hospedado)
+
+**Adoção de um banco antigo.** Se `pesca` já existir sem histórico, guarde o dump de estrutura e compare com uma instalação descartável até o último arquivo que produza exatamente a estrutura existente. Para recriar uma versão anterior à adoção do histórico, aplique os arquivos até essa versão com `psql -X -1 -v ON_ERROR_STOP=1 -f arquivo.sql` no banco descartável. Confira também os dados obrigatórios de inicialização, como a linha única de `pesca.invitation_settings`. Só depois informe o último arquivo conferido, por exemplo `npm run db:migrate:production -- --baseline 001_initial.sql`. Essa opção registra as versões conferidas e aplica as seguintes. Se houver diferenças sem explicação, investigue antes de registrar o histórico.
 
 ## Validação
 

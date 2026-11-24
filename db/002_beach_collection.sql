@@ -1,5 +1,3 @@
-begin;
-
 alter table pesca.sticker_placements
   drop constraint sticker_placements_sticker_id_check,
   add constraint sticker_placements_sticker_id_check check (sticker_id in (
@@ -13,5 +11,3 @@ alter table pesca.sticker_placements
   add constraint sticker_placements_zone_id_check check (zone_id in (
     'quadras', 'gazebo', 'coolers', 'cadeiras', 'torcida', 'beira-mar', 'mar', 'calcadao'
   ));
-
-commit;
