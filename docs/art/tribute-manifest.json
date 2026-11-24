@@ -1,0 +1,506 @@
+{
+  "method": "ImageGen integrado, uma chamada por personagem, com composição original. As referências servem para identificação visual. Os WebP preservam o canal alfa da imagem gerada, com dimensão de 256 × 256 px e base a 248 px.",
+  "rights": "O responsável pelo convite confirmou em 24/11/2026 a liberação das 22 imagens geradas para publicação neste aplicativo, incluindo os personagens e as representações dos atletas. As homenagens são não oficiais.",
+  "promptPrefix": "One original full-body isolated die-cut sticker for an illustrated Copacabana volleyball birthday party. Warm vintage Brazilian summer editorial cartoon, bold dark petrol hand-inked outlines, thin buttery cream outer cut edge, simple screenprinted flat gouache colors, restrained warm side shadows, strong face, slightly oversized head and hands, three-quarter action silhouette legible at 44px. Preserve exact identity, proportions and signature colors. Complete feet, head, props and border, square frame, clear transparent background, no text except stated uniform details, no scene, sand patch, watermark or cast shadow. ",
+  "stickers": [
+    {
+      "id": "pikachu",
+      "name": "Pikachu",
+      "subject": "Pikachu",
+      "collection": "pokemon",
+      "zone": "quadras",
+      "activity": "Pikachu abraça uma bola de vôlei com as duas patinhas.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/pikachu"
+      ],
+      "subjectPrompt": "Pikachu, classic small lemon-yellow Pokémon, long black-tipped ears pointed in different directions, two round scarlet cheeks, happy little mouth, brown tail base then angular lightning tail visible on right. Looking up as he hugs a blue-yellow volleyball against his belly with both short paws.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "squirtle",
+      "name": "Squirtle",
+      "subject": "Squirtle",
+      "collection": "pokemon",
+      "zone": "coolers",
+      "activity": "Squirtle toma água de coco de óculos escuros.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/squirtle"
+      ],
+      "subjectPrompt": "Squirtle from Pokémon relaxing seated, round sky-blue head and limbs, cream segmented belly and brown shell bordered in cream, big curled blue tail clearly visible, wearing little dark sunglasses and sipping a tiny coconut with a straw. Friendly compact turtle proportions.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "charmander",
+      "name": "Charmander",
+      "subject": "Charmander",
+      "collection": "pokemon",
+      "zone": "gazebo",
+      "activity": "Charmander passa protetor na bochecha, com a chama da cauda acesa.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/charmander"
+      ],
+      "subjectPrompt": "Charmander from Pokémon, orange biped lizard with cream belly, large teal eyes, rounded snout, small arms, curved tail showing flame at tip. Applying a dab of white sunscreen to its orange cheek with one paw, other paw holding little unlabelled bottle.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "snorlax",
+      "name": "Snorlax",
+      "subject": "Snorlax",
+      "collection": "pokemon",
+      "zone": "gazebo",
+      "activity": "Snorlax dorme de barriga para cima na sombra.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/snorlax"
+      ],
+      "subjectPrompt": "Snorlax from Pokémon, immense rounded dark teal body with cream face mask and belly, tiny pointed ears, eyes closed and two small lower fangs. Sleeping contentedly on its back at a gazebo, huge feet facing viewer, short claws, belly rising. Show Snorlax alone; gazebo already on map.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "psyduck",
+      "name": "Psyduck",
+      "subject": "Psyduck",
+      "collection": "pokemon",
+      "zone": "mar",
+      "activity": "Psyduck leva as patas à cabeça na água rasa.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/psyduck"
+      ],
+      "subjectPrompt": "Psyduck from Pokémon, plump yellow duck body with cream broad flat bill, three black hairs on crown, wide vacant tiny-pupilled eyes, both webbed paws clutching temples, orange webbed feet in a tiny shallow turquoise ripple. Stands confused.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "jigglypuff",
+      "name": "Jigglypuff",
+      "subject": "Jigglypuff",
+      "collection": "pokemon",
+      "zone": "torcida",
+      "activity": "Jigglypuff canta ao microfone para comemorar o ponto.",
+      "references": [
+        "https://www.pokemon.com/us/pokedex/jigglypuff"
+      ],
+      "subjectPrompt": "Jigglypuff from Pokémon, round pink body, huge teal eyes, pointy catlike ears with dark insides and signature curled forelock. Singing enthusiastically into tiny dark microphone, one foot lifted in celebration. No floating text.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "hinata",
+      "name": "Shoyo Hinata",
+      "subject": "Shoyo Hinata",
+      "collection": "haikyu",
+      "zone": "quadras",
+      "activity": "Hinata salta para a cortada com a camisa 10 do Karasuno.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Shoyo Hinata from Haikyu!!, fluffy spiky tangerine hair, wide brown eyes, compact wiry build, black Karasuno shirt with orange sides and white 10, black shorts, bare feet. Explosive right-handed spike at the apex, right elbow drawn high behind head as ball hovers in front above shoulder, free arm dropping, both knees kicked behind, focused exhilaration.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/hinata.webp"
+    },
+    {
+      "id": "kageyama",
+      "name": "Tobio Kageyama",
+      "subject": "Tobio Kageyama",
+      "collection": "haikyu",
+      "zone": "quadras",
+      "activity": "Kageyama ergue as mãos para levantar a bola de camisa 9.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Tobio Kageyama from Haikyu!!, distinctive straight ink-blue hair with angular fringe, piercing narrow blue eyes, serious face looking sharply up and LEFT. Authentic black Karasuno shirt with orange side panels and white number 9, black shorts, bare feet. Three-quarter PROFILE overhead jump-set follow-through, both hands just released the ball diagonally to his LEFT toward Hinata who will be positioned separately with the ball. Use open setter hands with thumbs and forefingers curved, strikingly athletic arched torso, one heel lifting. No ball in this image so the setter can be paired with the spiker. Uncluttered die-cut silhouette, full pose.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/kageyama.webp"
+    },
+    {
+      "id": "nishinoya",
+      "name": "Yu Nishinoya",
+      "subject": "Yu Nishinoya",
+      "collection": "haikyu",
+      "zone": "quadras",
+      "activity": "Nishinoya mergulha de manchete com a camisa laranja de líbero.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Yu Nishinoya from Haikyu!!, short libero with hair swept straight up and single prominent blond forelock amid dark spikes. Orange alternate Karasuno libero shirt black sides white 4, black shorts. Fearless near-horizontal dive toward the left, clasped forearms together, feet trailing behind and small sand flick. One incoming volleyball.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/nishinoya.webp"
+    },
+    {
+      "id": "tsukishima",
+      "name": "Kei Tsukishima",
+      "subject": "Kei Tsukishima",
+      "collection": "haikyu",
+      "zone": "quadras",
+      "activity": "Tsukishima, de óculos, estende os braços para fechar o bloqueio.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Kei Tsukishima from Haikyu!!, tall slender blond middle blocker with distinctive thick BLACK RECTANGULAR GLASSES framing his golden narrow eyes, short wavy flaxen hair and calm dry expression. Draw his face large enough to read in the gallery, using the slightly oversized head proportions of editorial sports caricature. Black Karasuno orange-paneled shirt with white number 11. Dynamic oblique lateral block in midair with long arms spread in wide V, firm spread hands, shoulders angled, knees flexed and staggered feet behind. He looks through glasses in three-quarter view. No net or ball. Use width of square canvas, strong angular silhouette, avoid needle-thin elongated proportions.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/tsukishima.webp"
+    },
+    {
+      "id": "tanaka",
+      "name": "Ryunosuke Tanaka",
+      "subject": "Ryunosuke Tanaka",
+      "collection": "haikyu",
+      "zone": "torcida",
+      "activity": "Tanaka cerra o punho e solta um grito de ponto.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Ryunosuke Tanaka from Haikyu!!, shaved dark buzzcut with scalp visible, angular face, sharp eyes and massive exuberant open grin. Black Karasuno orange-sided jersey white 5. Grounded wide celebratory stance, fist pumped and opposite hand clutching shirt, bare feet.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/tanaka.webp"
+    },
+    {
+      "id": "daichi",
+      "name": "Daichi Sawamura",
+      "subject": "Daichi Sawamura",
+      "collection": "haikyu",
+      "zone": "quadras",
+      "activity": "Daichi firma as pernas e une os antebraços para receber o saque.",
+      "references": [
+        "https://haikyu.jp/season1/",
+        "https://haikyu.jp/movie/mv2024/movie-special/movie-actionvis/"
+      ],
+      "subjectPrompt": "Daichi Sawamura from Haikyu!!, solid broad-shouldered captain, short dark crew cut, strong straight brows and steady eyes. Black Karasuno jersey with orange side panels, white captain's number 1, black shorts. Deep planted serve-receive stance leaning into locked forearms, broad stable platform, watching volleyball.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/daichi.webp"
+    },
+    {
+      "id": "goku",
+      "name": "Goku",
+      "subject": "Goku",
+      "collection": "dragon-ball-z",
+      "zone": "quadras",
+      "activity": "Goku salta para um saque com o uniforme laranja e azul.",
+      "references": [
+        "https://en.dragon-ball-official.com/news/01_478.html"
+      ],
+      "subjectPrompt": "Adult base-form Son Goku from classic Dragon Ball Z, iconic large asymmetric jet-black spiky hair, friendly grin, orange gi, deep blue undershirt, wristbands, sash and boots. Exaggerated airborne jump serve, powerful foreshortened palm contacting yellow-blue volleyball high overhead, trailing bent legs, no aura.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/goku.webp"
+    },
+    {
+      "id": "vegeta",
+      "name": "Vegeta",
+      "subject": "Vegeta",
+      "collection": "dragon-ball-z",
+      "zone": "quadras",
+      "activity": "Vegeta cruza os braços e fecha a cara depois de perder o ponto.",
+      "references": [
+        "https://en.dragon-ball-official.com/news/01_3929.html"
+      ],
+      "subjectPrompt": "Vegeta from classic DBZ, sharply upright black flame-shaped hair, deep widow's peak, furrowed brow, white gloves, cobalt jumpsuit and white-gold Cell-era chest armor. Frustrated after losing the rally, turned three-quarters toward left, arms firmly crossed, foot tapping, restrained angry scowl, no ball.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/vegeta.webp"
+    },
+    {
+      "id": "piccolo",
+      "name": "Piccolo",
+      "subject": "Piccolo",
+      "collection": "dragon-ball-z",
+      "zone": "beira-mar",
+      "activity": "Piccolo medita de pernas cruzadas, com as antenas à mostra.",
+      "references": [
+        "https://en.dragon-ball-official.com/news/01_1178.html"
+      ],
+      "subjectPrompt": "Piccolo from DBZ, green skin and pointed ears, two antennae on bare forehead, pink segmented arm patches, purple gi and flowing white weighted cape and pointed brown boots. Meditating seated cross-legged with eyes closed, hands resting on knees. No turban to hide antennae.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/piccolo.webp"
+    },
+    {
+      "id": "krillin",
+      "name": "Kuririn",
+      "subject": "Krillin",
+      "collection": "dragon-ball-z",
+      "zone": "quadras",
+      "activity": "Kuririn flexiona os joelhos para receber a bola de manchete.",
+      "references": [
+        "https://en.dragon-ball-official.com/news/01_3484.html"
+      ],
+      "subjectPrompt": "Adult Krillin from classic DBZ, short compact bald man, six forehead dots in two columns of three, round noseless face, orange gi and blue belt and wristbands. Wide low stance, forearms locked together to bump a blue yellow volleyball, sunshine smile.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/krillin.webp"
+    },
+    {
+      "id": "roshi",
+      "name": "Mestre Kame",
+      "subject": "Master Roshi",
+      "collection": "dragon-ball-z",
+      "zone": "cadeiras",
+      "activity": "Mestre Kame relaxa numa cadeira de praia de camisa florida.",
+      "references": [
+        "https://en.dragon-ball-official.com/search.php?tag=WeeklyCharacterShowcase"
+      ],
+      "subjectPrompt": "Master Roshi (Mestre Kame), bald wise old man with long fluffy white beard and moustache, little round red sunglasses, coral Hawaiian shirt, blue beach shorts, sandals. Relaxing in a compact teal fabric folding beach chair, leaning back with a coconut drink. Chair and body only.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/roshi.webp"
+    },
+    {
+      "id": "gohan",
+      "name": "Gohan",
+      "subject": "Gohan",
+      "collection": "dragon-ball-z",
+      "zone": "quadras",
+      "activity": "Gohan, Super Saiyajin dos Jogos de Cell, sobe para bloquear.",
+      "references": [
+        "https://en.dragon-ball-official.com/news/01_503.html"
+      ],
+      "subjectPrompt": "Son Gohan from the DBZ Cell Games, teenage Super Saiyan form with golden spiky hair and a single long forelock, teal eyes, Piccolo's purple gi, blue sash and brown boots. Jumping at the net, both hands reaching straight up for a block against a volleyball. No net or aura.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/gohan.webp"
+    },
+    {
+      "id": "giba",
+      "name": "Giba",
+      "subject": "Gilberto Amauri de Godoy Filho",
+      "collection": "lendas-quadra",
+      "zone": "quadras",
+      "activity": "Giba arma a cortada no ar com a camisa amarela 7.",
+      "references": [
+        "https://www.olympics.com/ioc/news/national-olympic-legends-brazilian-volleyball-star-giba-on-his-remarkable-career",
+        "https://www.olympedia.org/athletes/94478",
+        "https://www.fivb.com/giba-charismatic-motivator-on-and-off-the-court/"
+      ],
+      "subjectPrompt": "Respectful athletic caricature of Brazilian outside hitter Giba (Gilberto Amauri de Godoy Filho) in his competitive prime. Elongated angular face, prominent nose, expressive dark brows, dark tousled wavy hair, distinctive short pointed goatee and connected mustache, charismatic focused smile. Lean sinewy powerful jump attack, arched back, right hand high swinging toward volleyball, bent trailing legs. Yellow Brazil jersey with green trim and clearly visible dark green 7, green shorts, court shoes.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/giba.webp"
+    },
+    {
+      "id": "marcelinho",
+      "name": "Marcelinho",
+      "subject": "Marcelo Elgarten",
+      "collection": "lendas-quadra",
+      "zone": "quadras",
+      "activity": "Marcelinho levanta a bola acima da testa com a camisa 2.",
+      "references": [
+        "https://cob.org.br/time-brasil/medalhistas-olimpicos/marcelo-elgarten-marcelinho",
+        "https://volleybox.net/marcelo-elgarten-p191",
+        "https://www.olympedia.org/athletes/94475",
+        "https://ge.globo.com/google/amp/rn/volei/noticia/2025/12/16/encontro-das-estrelas-do-volei-potiguar-recebe-medalhista-olimpico.ghtml"
+      ],
+      "subjectPrompt": "Recognizable caricature of Marcelo Elgarten (Brazilian Olympic setter Marcelinho) at Beijing 2008. Light olive complexion, full dark brown straight hair side-parted, swept across forehead and slightly longer at nape, a very long and prominent nose, close-set dark eyes under horizontal brows, narrow cheeks and long clean-shaven jaw, alert mature face. Brazilian yellow SLEEVELESS setter's jersey with dark green trim and dark number 2, green shorts, white kneepads and court shoes. Both hands in high gentle overhead setting follow-through directing a ball toward the LEFT, face turned three-quarters left to watch his set, gracefully staggered feet, no ball in frame as teammate attacks it separately. Detailed enough to distinguish the face at thumbnail size, generous clear margin.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/marcelinho.webp"
+    },
+    {
+      "id": "serginho",
+      "name": "Serginho",
+      "subject": "Sérgio Dutra Santos",
+      "collection": "lendas-quadra",
+      "zone": "quadras",
+      "activity": "Serginho se estica numa defesa de peixinho com o uniforme azul de líbero.",
+      "references": [
+        "https://www.fivb.com/sergio-santos-the-most-valuable-libero-in-history/",
+        "https://www.fivb.com/serginhos-second-decade-of-glory/",
+        "https://www.olympedia.org/athletes/109262",
+        "https://www.cob.org.br/time-brasil/medalhistas-olimpicos/sergio-dutra-dos-santos"
+      ],
+      "subjectPrompt": "Respectful caricature of real Brazilian libero Sérgio Dutra Santos (Serginho/Escadinha) in his competitive prime, mature compact stocky torso, cropped very short dark hair with high hairline, powerful jaw, cheek creases, concentrated eyes. Contrasting deep cobalt Brazil libero jersey, yellow details and white 10, knee pads and shoes. Spectacular low horizontal floor defense, arms joined extending to left, face turned up, feet trailing high right, one volleyball close to forearms.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/serginho.webp"
+    },
+    {
+      "id": "emanuel",
+      "name": "Emanuel Rego",
+      "subject": "Emanuel Fernando Scheffer Rego",
+      "collection": "lendas-praia",
+      "zone": "quadras",
+      "activity": "Emanuel se abaixa para receber de manchete, com os óculos sobre os cachos.",
+      "references": [
+        "https://cob.org.br/time-brasil/medalhistas-olimpicos/emanuel-fernando-scheffer-rego",
+        "https://ge.globo.com/volei-de-praia/noticia/2014/08/dez-anos-apos-ouro-em-atenas-ricardo-e-emanuel-retomam-parceria.html",
+        "https://olimpiadas.uol.com.br/album/2012/08/09/alison-e-emanuel-sao-prata-no-volei-de-praia.htm"
+      ],
+      "subjectPrompt": "Athens-era Brazilian Olympic beach volleyball legend Emanuel Fernando Scheffer Rego, age 31. Draw a recognizable face portrait on a lean, athletic full body: suntanned light olive skin, conspicuous short curly chestnut hair, high temples, very distinctive long narrow face, prominent aquiline nose, bright deep-set brown eyes, expressive cheek creases and big toothy smile. White wraparound sunglasses resting on top of curls, no cap. In deep low crouch, facing RIGHT ready to receive with linked outstretched forearms; bare feet and yellow Brazil tank with blue shorts. Eyes following the incoming ball outside the frame, no ball. Show face in near frontal three-quarter view, generous margin around entire figure.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/emanuel.webp"
+    },
+    {
+      "id": "ricardo",
+      "name": "Ricardo Santos",
+      "subject": "Ricardo Alex Costa Santos",
+      "collection": "lendas-praia",
+      "zone": "quadras",
+      "activity": "Ricardo sobe com as duas mãos abertas para bloquear na rede.",
+      "references": [
+        "https://cob.org.br/time-brasil/medalhistas-olimpicos/ricardo-alex-costa-santos",
+        "https://ge.globo.com/volei-de-praia/noticia/2014/08/dez-anos-apos-ouro-em-atenas-ricardo-e-emanuel-retomam-parceria.html"
+      ],
+      "subjectPrompt": "Brazilian Olympic beach blocker Ricardo Alex Costa Santos in his Athens 2004 gold medal period. Likeness: sun-tanned medium olive brown skin, long straight dark brown hair swept back with visible long ends at his nape, broad long forehead, pronounced straight nose, long lean oval jaw with light stubble. Sunglasses pushed up on crown above visible eyes; no cap. Powerful long-limbed full-height airborne blocking pose facing slightly LEFT toward partner, both hands above head open at net height, slight knee bend, bare feet. Yellow national beach singlet green trim and blue trunks. No ball or net. Keep cream cut edge intact all around.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/ricardo.webp"
+    },
+    {
+      "id": "alison",
+      "name": "Alison Cerutti",
+      "subject": "Alison Conte Cerutti",
+      "collection": "lendas-praia",
+      "zone": "quadras",
+      "activity": "Alison, o Mamute, comemora o bloqueio com os punhos cerrados.",
+      "references": [
+        "https://cob.org.br/time-brasil/medalhistas-olimpicos/alison-conte-cerutti",
+        "https://olimpiadas.uol.com.br/album/2012/08/09/alison-e-emanuel-sao-prata-no-volei-de-praia.htm"
+      ],
+      "subjectPrompt": "Respectful caricature of Brazilian beach volleyball player Alison Cerutti (Mamute) Rio 2016 era, imposing broad muscular silhouette, thick reddish-brown beard, fair sunburnt skin, wide jaw, backward pale baseball cap. Yellow Brazil beach vest, green trim, blue trunks, bare feet. Celebrating a monster block, both clenched fists low, chest forward, triumphant bellow facing left toward partner.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/alison.webp"
+    },
+    {
+      "id": "mario",
+      "name": "Mario",
+      "subject": "Mario",
+      "collection": "games",
+      "zone": "quadras",
+      "activity": "Mario salta para bater na bola com a luva branca.",
+      "references": [
+        "https://www.nintendo.com/en-ca/explore/characters/mario/friends/"
+      ],
+      "subjectPrompt": "Super Mario himself, compact stocky cartoon plumber, big round nose, scalloped black mustache, bright blue eyes, red cap with M badge, red shirt, blue overalls with two yellow buttons, white gloves and brown shoes. Springing joyfully, one oversized gloved hand open striking a volleyball overhead, other hand out balancing, legs tucked. Keep Mario's characteristic proportions.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "luigi",
+      "name": "Luigi",
+      "subject": "Luigi",
+      "collection": "games",
+      "zone": "quadras",
+      "activity": "Luigi se encolhe para receber um saque de manchete.",
+      "references": [
+        "https://www.nintendo.com/en-ca/explore/characters/mario/friends/"
+      ],
+      "subjectPrompt": "Luigi from Nintendo, tall slender green-capped brother with L badge, long oval nose, upward mustache, green shirt, blue overalls, white gloves, brown shoes. Nervously receiving a volleyball with locked arms, knees bent and eyes wide.",
+      "origin": null,
+      "status": "generation_blocked",
+      "publicationApproved": false,
+      "asset": null
+    },
+    {
+      "id": "sonic",
+      "name": "Sonic",
+      "subject": "Sonic",
+      "collection": "games",
+      "zone": "beira-mar",
+      "activity": "Sonic dispara atrás da bola com os tênis vermelhos levantando areia.",
+      "references": [
+        "https://asia.sega.com/SonicSuperStars/en/character/"
+      ],
+      "subjectPrompt": "Sonic the Hedgehog running across sand toward a small volleyball, three broad sweeping royal-blue quills, joined oval eyes, peach muzzle, white gloves and oversized red running shoes with white straps, long dynamic forward-leaning stride. One tiny sand flick.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/sonic.webp"
+    },
+    {
+      "id": "tails",
+      "name": "Tails",
+      "subject": "Miles “Tails” Prower",
+      "collection": "games",
+      "zone": "coolers",
+      "activity": "Tails leva um balde e uma toalha com as duas caudas levantadas.",
+      "references": [
+        "https://asia.sega.com/SonicSuperStars/en/character/"
+      ],
+      "subjectPrompt": "Miles Tails Prower from Sonic, friendly golden-orange fox with exactly TWO distinct white-tipped bushy tails fanned apart, white muzzle and chest, big blue eyes, white gloves, red white shoes. Carrying striped rolled beach towel and a little sand bucket, cheerful walk.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/tails.webp"
+    },
+    {
+      "id": "ryu",
+      "name": "Ryu",
+      "subject": "Ryu",
+      "collection": "games",
+      "zone": "quadras",
+      "activity": "Ryu prepara um saque potente com a faixa vermelha ao vento.",
+      "references": [
+        "https://www.playstation.com/en-us/games/street-fighter-6/everything-you-need-to-know-about-street-fighter-6/"
+      ],
+      "subjectPrompt": "Classic Street Fighter Ryu, thick black brows and short shaggy black hair, long red headband ends flowing behind, white sleeveless frayed gi, black belt, red padded gloves, bare feet. Powerful volleyball overhand serve with yellow blue ball high, broad athletic build.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/ryu.webp"
+    },
+    {
+      "id": "chunli",
+      "name": "Chun-Li",
+      "subject": "Chun-Li",
+      "collection": "games",
+      "zone": "quadras",
+      "activity": "Chun-Li estende a perna em uma defesa lateral de manchete.",
+      "references": [
+        "https://www.playstation.com/en-us/games/street-fighter-6/everything-you-need-to-know-about-street-fighter-6/",
+        "https://game.capcom.com/cfn/sfv/column/130435"
+      ],
+      "subjectPrompt": "Chun-Li from classic Street Fighter, twin hair buns in white silk covers and ribbons, blue gold-trimmed qipao-inspired athletic tunic, brown tights, white lace-up boots and signature bracelets. Dynamic athletic low lateral volleyball save, one long leg extended sideways, clasped forearms reaching for ball. No fight.",
+      "origin": "ImageGen",
+      "status": "approved_for_publication",
+      "publicationApproved": true,
+      "asset": "public/beach/stickers/chunli.webp"
+    }
+  ]
+}

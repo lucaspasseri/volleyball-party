@@ -45,10 +45,11 @@ try {
     "-f",
     "tests/database/bootstrap.sql",
   ]);
-  run(process.execPath, ["scripts/migrate.mjs", "dev"], {
+  const migrate = () => run(process.execPath, ["scripts/migrate.mjs", "dev"], {
     ...process.env,
     DEV_ADMIN_DATABASE_URL: url("pesca_test_owner"),
   });
+  migrate();
   if (process.argv[2] === "--e2e") {
     child = spawn(
       process.execPath,
@@ -73,6 +74,7 @@ try {
       child.on("exit", (code) => resolve(code ?? 1));
     });
   } else {
+    migrate(); // Replaying a synchronized catalog must be a no-op.
     run("psql", [
       url("pesca_test_owner"),
       "-v",

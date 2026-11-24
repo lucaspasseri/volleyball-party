@@ -47,3 +47,23 @@ As capturas abaixo usam convidados fictícios do servidor de testes. Não há co
 Para reproduzir os testes SQL, use `npm run test:db` com PostgreSQL instalado. O comando inicializa um banco descartável no computador e testa o schema e os privilégios reais.
 
 O fluxo Google/Neon hospedado ainda requer verificação no projeto de destino.
+
+## Coleções e publicação
+
+O álbum do convite em `http://localhost:3000/#expectativas` reúne as mesmas 78 figurinhas públicas em desenvolvimento e produção. O botão **Todos** mostra o álbum inteiro. Os filtros de coleção rolam horizontalmente no celular. Qualquer visitante pode abrir o álbum. Guardar um lugar na cena compartilhada segue as regras de RSVP e consentimento descritas acima.
+
+| Coleção | Figurinhas | Situação da arte |
+| --- | ---: | --- |
+| Turma da praia | 30 | Pública |
+| Cultura pop | 26 | Pública |
+| Haikyu!! | 6 | Pública |
+| Dragon Ball Z | 6 | Pública |
+| Lendas do Vôlei | 3 | Pública |
+| Lendas do Vôlei de Praia | 3 | Pública |
+| Games | 4 | Pública |
+
+Os 22 WebP das homenagens preservam as imagens geradas de 256 × 256 px com transparência. O manifesto identifica os personagens, as seis pessoas retratadas, as referências e a situação de cada imagem. Os seis Pokémon, Mario e Luigi não tiveram imagens geradas e ficam fora da contagem de 78. [Manifesto das homenagens](art/tribute-manifest.json)
+
+As 78 imagens estão versionadas em `public/beach/stickers/<id>.webp`. O álbum e os lugares guardados usam a mesma URL estática. Os testes verificam todos os IDs, o inventário de arquivos e o tamanho e a transparência das novas imagens.
+
+A migração `004_tribute_stickers.sql` aceita os 78 IDs na coluna existente `sticker_id`. O catálogo é definido em TypeScript. Aplicar a migração não cria convidados, respostas nem posições. O histórico transacional impede reaplicar a mesma versão. O comando de migração deve corresponder ao destino do banco usado pelo servidor. [Migrações e publicação](../README.md#migrações-e-publicação)

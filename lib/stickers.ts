@@ -1,5 +1,11 @@
 import type { ZoneId } from "./beach";
 
+import {
+  tributes,
+  tributeCollections,
+  tributeIds,
+} from "./tribute-stickers";
+
 const collections = {
   beach: {
     name: "Turma da praia",
@@ -29,7 +35,7 @@ const categoryNames: Record<CategoryId, string> = {
 
 type Sticker = { name: string; category: CategoryId; zone: ZoneId };
 
-export const stickers = {
+const originals = {
   levantadora: { name: "Levantadora", category: "volei", zone: "quadras" },
   foguete: { name: "Foguete da areia", category: "volei", zone: "quadras" },
   paredao: { name: "Paredão", category: "volei", zone: "quadras" },
@@ -208,10 +214,18 @@ export const stickers = {
   },
 } as const satisfies Record<string, Sticker>;
 
+export const stickers = { ...originals, ...tributes };
 export type StickerId = keyof typeof stickers;
 export const stickerIds = Object.keys(stickers) as StickerId[];
 
-export const stickerCollections = (
+type StickerGroup = { name: string; ids: StickerId[] };
+type StickerCollection = StickerGroup & {
+  id: string;
+  groups: StickerGroup[];
+  showAll: boolean;
+};
+
+const originalCollections: StickerCollection[] = (
   Object.keys(collections) as CollectionId[]
 ).map((id) => {
   const { name, categories, showAll } = collections[id];
@@ -224,6 +238,17 @@ export const stickerCollections = (
   const ids = groups.flatMap((group) => group.ids);
   return { id, name, groups, ids, showAll };
 });
+
+export const stickerCollections: StickerCollection[] = [
+  ...originalCollections,
+  ...Object.entries(tributeCollections).map(([id, name]) => ({
+    id,
+    name,
+    ids: tributeIds.filter((sticker) => tributes[sticker].category === id),
+    groups: [],
+    showAll: false,
+  })),
+];
 
 export function stickerSrc(id: StickerId) {
   return `/beach/stickers/${id}.webp`;

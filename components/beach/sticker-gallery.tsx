@@ -5,10 +5,13 @@ import { motion, useReducedMotion } from "motion/react";
 import { Check, X } from "lucide-react";
 import {
   stickerCollections,
+  stickerIds,
   stickers,
   stickerSrc,
   type StickerId,
 } from "@/lib/stickers";
+
+import { isTribute, tributes } from "@/lib/tribute-stickers";
 
 type Props = {
   initial: StickerId;
@@ -26,18 +29,26 @@ export default function StickerGallery({
   const reduced = useReducedMotion();
   const [selected, select] = useState(initial);
   const [showAll, setShowAll] = useState(false);
-  const collection = stickerCollections.find(({ ids }) =>
-    ids.includes(selected),
-  )!;
+  const [browseAll, setBrowseAll] = useState(false);
+  const collection = stickerCollections.find(({ ids }) => ids.includes(selected))!;
   const filters = collection.showAll
     ? [{ name: "Todas", ids: collection.ids }, ...collection.groups]
     : collection.groups;
-  const group = showAll
-    ? filters[0]
-    : collection.groups.find(({ ids }) => ids.includes(selected))!;
+  const group = browseAll
+    ? { name: "Todos", ids: stickerIds }
+    : showAll && collection.showAll
+      ? filters[0]
+      : (collection.groups.find(({ ids }) => ids.includes(selected)) ??
+        collection);
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
+    el.querySelector(
+      '.album-collections [aria-pressed="true"]',
+    )?.scrollIntoView({
+      inline: "nearest",
+      block: "nearest",
+    });
     return () => el.close();
   }, []);
   return (
@@ -65,13 +76,21 @@ export default function StickerGallery({
           </button>
         </header>
         <div className="album-collections" role="group" aria-label="Coleções">
+          <button
+            type="button"
+            aria-pressed={browseAll}
+            onClick={() => setBrowseAll(true)}
+          >
+            Todos
+          </button>
           {stickerCollections.map((item) => (
             <button
               key={item.id}
               type="button"
-              aria-pressed={item === collection}
+              aria-pressed={!browseAll && item.id === collection.id}
               onClick={() => {
-                if (item === collection) return;
+                setBrowseAll(false);
+                if (item.id === collection.id && !browseAll) return;
                 select(item.ids[0]);
                 setShowAll(item.showAll);
               }}
@@ -81,21 +100,23 @@ export default function StickerGallery({
             </button>
           ))}
         </div>
-        <div className="album-filters" role="group" aria-label="Categorias">
-          {filters.map((item) => (
-            <button
-              key={item.name}
-              type="button"
-              aria-pressed={item === group}
-              onClick={() => {
-                setShowAll(item.ids === collection.ids);
-                if (!item.ids.includes(selected)) select(item.ids[0]);
-              }}
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
+        {!browseAll && filters.length > 0 && (
+          <div className="album-filters" role="group" aria-label="Categorias">
+            {filters.map((item) => (
+              <button
+                key={item.name}
+                type="button"
+                aria-pressed={item === group}
+                onClick={() => {
+                  setShowAll(item.ids === collection.ids);
+                  if (!item.ids.includes(selected)) select(item.ids[0]);
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="album-layout">
           <div className="album-preview">
             <motion.img
@@ -104,7 +125,7 @@ export default function StickerGallery({
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 310, damping: 16 }}
               src={stickerSrc(selected)}
-              alt=""
+              alt={isTribute(selected) ? tributes[selected].description : ""}
             />
             <strong>{stickers[selected].name}</strong>
           </div>

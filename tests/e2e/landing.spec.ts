@@ -1,3 +1,4 @@
+import { tributeIds } from "../../lib/tribute-stickers";
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
@@ -168,4 +169,21 @@ test("reduced motion and narrow screens remain usable", async ({ page }) => {
   ).toBe(true);
   await page.getByRole("link", { name: "Explorar a festa" }).click();
   await expect(page).toHaveURL(/#quando$/);
+});
+
+test("visitors can open every available sticker in the regular album", async ({ page }) => {
+  await page.getByRole("button", { name: "Ver figurinhas" }).click();
+  const album = page.getByRole("dialog");
+  await album.getByRole("button", { name: "Todos", exact: true }).click();
+  const images = album.locator(".album-grid img");
+  await expect(images).toHaveCount(78);
+  const urls = await images.evaluateAll(async (elements) => Promise.all(elements.map(async (el) => {
+    const img = el as HTMLImageElement;
+    img.loading = "eager";
+    await img.decode();
+    if (img.naturalWidth !== 256 || img.naturalHeight !== 256) throw new Error(img.src);
+    return img.getAttribute("src");
+  })));
+  expect(new Set(urls).size).toBe(urls.length);
+  expect(urls).toEqual(expect.arrayContaining(tributeIds.map((id) => `/beach/stickers/${id}.webp`)));
 });

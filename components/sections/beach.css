@@ -361,6 +361,9 @@
 }
 .album-collections {
   display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
   gap: 4px;
   margin-bottom: 8px;
   padding: 4px;
@@ -368,7 +371,9 @@
   background: #efe9d9;
 }
 .album-collections button {
-  flex: 1;
+  flex: 1 0 auto;
+  padding-inline: 12px;
+  white-space: nowrap;
   min-height: 44px;
   border-radius: 9px;
   display: flex;

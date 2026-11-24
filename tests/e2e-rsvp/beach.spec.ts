@@ -4,7 +4,7 @@ import { stickerCollections, stickerIds, stickers } from "../../lib/stickers";
 
 const mock = "http://127.0.0.1:54326";
 
-test("a full beach renders both collections within the sticker transfer budget", async ({
+test("a full beach renders all seven collections within the sticker transfer budget", async ({
   page,
   request,
 }) => {

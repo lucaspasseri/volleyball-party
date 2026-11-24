@@ -1,6 +1,8 @@
+import { tributeIds, tributes } from "../lib/tribute-stickers";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import sharp from "sharp";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
   destination,
@@ -16,7 +18,11 @@ import {
   zones,
   type Point,
 } from "../lib/beach";
-import { stickerCollections, stickerIds } from "../lib/stickers";
+import {
+  stickerCollections,
+  stickerIds,
+  stickerSrc,
+} from "../lib/stickers";
 
 test("the saved center restores the same feet after panning, zooming and resizing", () => {
   for (const id of zoneIds) {
@@ -119,7 +125,7 @@ test("the water and promenade accept placements and every bounded center fits th
     }
   }
 });
-test("both collections group every sticker exactly once with a distinct asset", () => {
+test("original collections retain every public image and ID", () => {
   const [beach, pop] = stickerCollections;
   assert.equal(beach.ids.length, 30);
   assert.equal(pop.ids.length, 26);
@@ -130,20 +136,18 @@ test("both collections group every sticker exactly once with a distinct asset", 
   const grouped = stickerCollections.flatMap(({ groups }) =>
     groups.flatMap(({ ids }) => ids),
   );
-  assert.deepEqual(grouped.sort(), [...stickerIds].sort());
+  const originalIds = grouped.sort();
   const dir = "public/beach/stickers";
   assert.deepEqual(
-    readdirSync(dir)
-      .filter((file) => file.endsWith(".webp"))
-      .sort(),
-    stickerIds.map((id) => `${id}.webp`).sort(),
+    originalIds.filter((id) => existsSync(`${dir}/${id}.webp`)),
+    originalIds,
   );
-  const hashes = stickerIds.map((id) =>
+  const hashes = originalIds.map((id) =>
     createHash("sha256")
       .update(readFileSync(`${dir}/${id}.webp`))
       .digest("hex"),
   );
-  assert.equal(new Set(hashes).size, stickerIds.length);
+  assert.equal(new Set(hashes).size, 56);
 });
 
 test("all previous IDs and centers remain readable and invalid payloads are rejected", () => {
@@ -188,4 +192,54 @@ test("all previous IDs and centers remain readable and invalid payloads are reje
     { zone_id: null },
   ])
     assert.ok(!placementSchema.safeParse({ ...valid, ...invalid }).success);
+});
+
+test("the full album has 78 unique IDs across seven populated collections", () => {
+  assert.equal(stickerIds.length, 78);
+  assert.deepEqual(stickerCollections.map(({ ids }) => ids.length), [30, 26, 6, 6, 3, 3, 4]);
+  assert.deepEqual(stickerCollections.flatMap(({ ids }) => ids).sort(), [...stickerIds].sort());
+  for (const id of tributeIds) {
+    assert.equal(stickerSrc(id), `/beach/stickers/${id}.webp`);
+    assert.ok(tributes[id].description.length > 15);
+  }
+});
+
+test("the reference manifest matches the SQL allowlist and published WebP artwork", async () => {
+  const manifest = JSON.parse(
+    readFileSync("docs/art/tribute-manifest.json", "utf8"),
+  ) as {
+    stickers: {
+      id: string;
+      references: string[];
+      asset: string | null;
+      publicationApproved: boolean;
+    }[];
+  };
+  assert.equal(
+    new Set(manifest.stickers.map(({ id }) => id)).size,
+    manifest.stickers.length,
+  );
+  const ready = manifest.stickers.filter((entry) => entry.asset);
+  assert.deepEqual(ready.map(({ id }) => id).sort(), [...tributeIds].sort());
+  const sql = readFileSync("db/004_tribute_stickers.sql", "utf8");
+  assert.deepEqual(
+    Array.from(sql.matchAll(/'([^']+)'/g), ([, id]) => id).sort(),
+    [...stickerIds].sort(),
+  );
+  assert.deepEqual(
+    readdirSync("public/beach/stickers").filter((file) => file.endsWith(".webp")).sort(),
+    stickerIds.map((id) => id + ".webp").sort(),
+  );
+  for (const entry of manifest.stickers) {
+    assert.ok(entry.references.length);
+    assert.equal(entry.publicationApproved, Boolean(entry.asset));
+    if (!entry.asset) continue;
+    assert.equal(entry.asset, `public/beach/stickers/${entry.id}.webp`);
+    const meta = await sharp(entry.asset).metadata();
+    assert.deepEqual(
+      [meta.format, meta.width, meta.height, meta.hasAlpha],
+      ["webp", 256, 256, true],
+    );
+    assert.equal((await sharp(entry.asset).stats()).isOpaque, false);
+  }
 });
