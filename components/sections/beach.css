@@ -359,6 +359,32 @@
   gap: 4px;
   margin-bottom: 12px;
 }
+.album-collections {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #efe9d9;
+}
+.album-collections button {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-weight: 750;
+}
+.album-collections button[aria-pressed="true"] {
+  background: var(--sun);
+  box-shadow: 0 1px 3px #173e5238;
+}
+.album-collections span {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
 .album-filters button {
   min-height: 44px;
   border-radius: 22px;
@@ -395,6 +421,11 @@
   align-content: start;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 7px;
+  max-height: min(40dvh, 320px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 3px;
+  scrollbar-width: thin;
 }
 .album-grid button {
   position: relative;
@@ -500,6 +531,7 @@
   }
   .album-grid {
     grid-template-columns: repeat(6, minmax(0, 1fr));
+    max-height: clamp(145px, calc(100dvh - 495px), 320px);
   }
   .sticker-album footer .button {
     width: 100%;

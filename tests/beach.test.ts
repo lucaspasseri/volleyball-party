@@ -10,14 +10,13 @@ import {
   placementSchema,
   playable,
   scenePoint,
-  stickerGroups,
-  stickerIds,
   suggestSpot,
   zoneAt,
   zoneIds,
   zones,
   type Point,
 } from "../lib/beach";
+import { stickerCollections, stickerIds } from "../lib/stickers";
 
 test("the saved center restores the same feet after panning, zooming and resizing", () => {
   for (const id of zoneIds) {
@@ -120,9 +119,17 @@ test("the water and promenade accept placements and every bounded center fits th
     }
   }
 });
-test("all 30 stickers appear once in the album with distinct assets", () => {
-  assert.equal(stickerIds.length, 30);
-  const grouped = stickerGroups.flatMap(({ ids }) => ids);
+test("both collections group every sticker exactly once with a distinct asset", () => {
+  const [beach, pop] = stickerCollections;
+  assert.equal(beach.ids.length, 30);
+  assert.equal(pop.ids.length, 26);
+  assert.deepEqual(
+    pop.groups.map(({ name }) => name),
+    ["Anime", "Esportes", "Música", "Cinema e games"],
+  );
+  const grouped = stickerCollections.flatMap(({ groups }) =>
+    groups.flatMap(({ ids }) => ids),
+  );
   assert.deepEqual(grouped.sort(), [...stickerIds].sort());
   const dir = "public/beach/stickers";
   assert.deepEqual(
@@ -136,7 +143,7 @@ test("all 30 stickers appear once in the album with distinct assets", () => {
       .update(readFileSync(`${dir}/${id}.webp`))
       .digest("hex"),
   );
-  assert.equal(new Set(hashes).size, 30);
+  assert.equal(new Set(hashes).size, stickerIds.length);
 });
 
 test("all previous IDs and centers remain readable and invalid payloads are rejected", () => {

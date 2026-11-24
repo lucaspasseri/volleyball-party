@@ -48,6 +48,8 @@ try {
     "db/001_initial.sql",
     "-f",
     "db/002_beach_collection.sql",
+    "-f",
+    "db/003_pop_culture.sql",
   ]);
   if (process.argv[2] === "--e2e") {
     child = spawn(

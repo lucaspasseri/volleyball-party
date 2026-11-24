@@ -1,7 +1,13 @@
 // Test-only Managed Better Auth upstream. RSVP and sticker data use real PostgreSQL.
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
-import { placementAt, zones } from "../../lib/beach";
+import {
+  placementAt,
+  suggestSpot,
+  zones,
+  type GroundPosition,
+} from "../../lib/beach";
+import { stickerIds, stickers, type StickerId } from "../../lib/stickers";
 import { Pool } from "pg";
 import { basename, isAbsolute } from "node:path";
 
@@ -76,7 +82,7 @@ function session(token: string, actor: string) {
   };
 }
 
-async function populateBeach() {
+async function populateBeach(crowded: boolean) {
   const samples = [
     ["Lia", "paredao", "quadras", 0],
     ["Rafa", "foguete", "quadras", 1],
@@ -85,11 +91,27 @@ async function populateBeach() {
     ["Davi", "coco", "cadeiras", 0],
     ["Iara", "salva-vidas", "coolers", 0],
   ] as const;
-  for (const [name, sticker, zone, index] of samples) {
-    const { x, y } = placementAt(
-      { ...zones[zone].anchors[index], zone_id: zone },
-      sticker,
-    );
+  const guests: { name: string; sticker: StickerId; spot: GroundPosition }[] =
+    [];
+  if (crowded) {
+    for (const sticker of stickerIds) {
+      const spot = suggestSpot(
+        stickers[sticker].zone,
+        guests.map((guest) => guest.spot),
+      );
+      guests.push({ name: `Convidado ${guests.length + 1}`, sticker, spot });
+    }
+  } else {
+    for (const [name, sticker, zone, index] of samples) {
+      guests.push({
+        name,
+        sticker,
+        spot: { ...zones[zone].anchors[index], zone_id: zone },
+      });
+    }
+  }
+  for (const { name, sticker, spot } of guests) {
+    const { x, y, zone_id } = placementAt(spot, sticker);
     const actor = `sample-${name}`;
     await db.query("select pesca.save_rsvp($1,$2::jsonb,'')", [
       actor,
@@ -106,7 +128,7 @@ async function populateBeach() {
     await db.query("select pesca.save_beach_sticker($1,$2,$3,$4,$5)", [
       actor,
       sticker,
-      zone,
+      zone_id,
       x,
       y,
     ]);
@@ -158,7 +180,8 @@ async function handle(
         "update pesca.test_controls set fail_save=coalesce($1,fail_save), delay_save=coalesce($2,delay_save)",
         [body.failSave ?? null, body.delaySave ?? null],
       );
-      if (body.populateBeach) await populateBeach();
+      if (body.populateBeach)
+        await populateBeach(body.populateBeach === "crowded");
       return send({ ok: true });
     }
     case "/__state": {

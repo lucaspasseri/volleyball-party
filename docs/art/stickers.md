@@ -51,3 +51,9 @@ O campo `Subject` de cada geração está na tabela.
 | calcadao | Fit senior brown-skinned man with neatly trimmed white beard, turquoise terry headband and coral sleeveless shirt, striding briskly down a promenade in trainers, towel swung over one shoulder, long open walking stride. |
 | cooler | Broad-shouldered stocky brown-skinned adult with close shaved head and chunky sunglasses, sleeveless yellow floral beach shirt and teal trunks, knees bent lifting a single large rectangular red cooler by its cream handle. |
 | leque | Curvy middle-aged Brazilian woman with straight ink-black bob and a wide sunhat, coral wrap dress, lounging cross-legged on a folded teal beach mat, fanning herself with a large open yellow folding fan in the gazebo shade. No structure. |
+
+## Cultura pop
+
+As 26 figurinhas são personagens originais desenhados para a festa com o ImageGen integrado. A figurinha **Saque viagem** serviu de referência para os contornos, a paleta e a borda de recorte. Os desenhos usam arquétipos de mangá, esportes, música, cinema e jogos, com nomes próprios da coleção. O DJ do isopor usa o cooler como toca-discos e o Ronin do milho faz uma pausa no banco com uma espiga assada.
+
+Cada desenho tem um WebP transparente de 256 × 256 px. O catálogo define o nome, a categoria e a área sugerida de cada figurinha. [Catálogo das coleções](../../lib/stickers.ts)

@@ -54,9 +54,10 @@ O convite abre em modo de prévia com as variáveis de banco e autenticação em
    SELECT format('GRANT CONNECT ON DATABASE %I TO pesca_runtime', current_database()) \gexec
    \i db/001_initial.sql
    \i db/002_beach_collection.sql
+   \i db/003_pop_culture.sql
    ```
 
-   A instalação do schema é transacional e deve ser executada uma vez por banco novo. Crie `pesca_runtime` via SQL para que o login tenha apenas os privilégios concedidos pela instalação. Use a conexão do proprietário apenas para inicialização e administração. Em bancos que já usam o primeiro schema, execute apenas a migração `db/002_beach_collection.sql` antes de publicar o álbum ampliado. [Privilégios de roles na Neon](https://neon.com/docs/manage/roles)
+   A instalação do schema é transacional e deve ser executada uma vez por banco novo. Crie `pesca_runtime` via SQL para que o login tenha apenas os privilégios concedidos pela instalação. Use a conexão do proprietário apenas para inicialização e administração. Em bancos existentes, aplique as migrações pendentes em ordem numérica antes de publicar o novo catálogo. [Privilégios de roles na Neon](https://neon.com/docs/manage/roles)
 
 4. Use `.env.example` como modelo para `.env.local`. Configure estas variáveis no ambiente do servidor, localmente e na hospedagem.
 
@@ -96,7 +97,7 @@ Os testes de banco e de RSVP precisam de `initdb`, `pg_ctl` e `psql` no PATH. Ca
 ## Funcionalidades e limitações
 
 - **Marco 2 implementado:** Google OAuth via Neon Auth, Server Actions e Neon PostgreSQL, RSVP privado por padrão, consentimentos separados para nome/foto, lista e contagens, moderação e CSV em `/organizador`. Configuração e verificação em [docs/RSVP.md](docs/RSVP.md). Sem credenciais, a seção explica que as confirmações estão sendo preparadas.
-- **Marco 3 implementado:** mapa ilustrado de Copacabana, oito áreas e trinta figurinhas. Convidados confirmados guardam e ajustam seu lugar na areia. [Migração, coordenadas, inventário de arte e capturas](docs/PRAIA.md).
+- O mapa ilustrado de Copacabana tem oito áreas e duas coleções de figurinhas. A Turma da praia reúne 30 convidados, e Cultura pop acrescenta 26 personagens originais. Convidados confirmados guardam e ajustam seu lugar na areia. [Migração, coordenadas, inventário de arte e capturas](docs/PRAIA.md).
 - O posto e as barracas ainda não foram definidos. Não há nomes ou ponto de encontro inventados.
 - O clima depende da disponibilidade e dos limites do Open-Meteo; previsão distante não é garantida e pode mudar.
 - Este marco entrega o código no repositório local. Nenhum domínio, serviço pago ou publicação foi configurado.

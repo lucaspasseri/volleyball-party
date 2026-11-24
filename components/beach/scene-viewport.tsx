@@ -22,8 +22,6 @@ import {
   destination,
   feet,
   scenePoint,
-  stickerNames,
-  stickerSrc,
   zoneIds,
   zones,
   type GroundPosition,
@@ -32,6 +30,7 @@ import {
   type SceneRow,
   type ZoneId,
 } from "@/lib/beach";
+import { stickers, stickerSrc } from "@/lib/stickers";
 import { DraftSticker, stickerStyle } from "./scene-sticker";
 
 const icons = {
@@ -315,7 +314,7 @@ export function SceneViewport({
                 {guest.mine && " · você"}
               </strong>
               <p>
-                {stickerNames[guest.sticker_id]} · {zones[guest.zone_id].name}
+                {stickers[guest.sticker_id].name} · {zones[guest.zone_id].name}
               </p>
             </div>
             <button

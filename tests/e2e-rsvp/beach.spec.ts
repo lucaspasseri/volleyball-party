@@ -1,7 +1,40 @@
 import { test, expect } from "@playwright/test";
-import { feet, stickerGroups, stickerNames, zones } from "../../lib/beach";
+import { feet, zones } from "../../lib/beach";
+import { stickerCollections, stickerIds, stickers } from "../../lib/stickers";
 
 const mock = "http://127.0.0.1:54326";
+
+test("a full beach renders both collections within the sticker transfer budget", async ({
+  page,
+  request,
+}) => {
+  await request.post(mock + "/__reset");
+  await request.post(mock + "/__control", {
+    data: { populateBeach: "crowded" },
+  });
+  await page.goto("/#expectativas");
+  const map = page.locator(".beach-map");
+  const images = map.locator(".placed-sticker img");
+  await expect(images).toHaveCount(stickerIds.length);
+  const bytes = await images.evaluateAll(async (elements) => {
+    await Promise.all(elements.map((el) => (el as HTMLImageElement).decode()));
+    return performance
+      .getEntriesByType("resource")
+      .filter((entry) =>
+        new URL(entry.name).pathname.startsWith("/beach/stickers/"),
+      )
+      .reduce(
+        (sum, entry) =>
+          sum + (entry as PerformanceResourceTiming).encodedBodySize,
+        0,
+      );
+  });
+  expect(bytes).toBeGreaterThan(0);
+  expect(bytes).toBeLessThan(2 * 1024 * 1024);
+  await map.getByRole("button", { name: "Aumentar zoom" }).click();
+  await map.getByRole("button", { name: "Gazebo", exact: true }).click();
+  await expect(map.locator(".beach-discovery")).toContainText("Na sombra");
+});
 
 test("exploration, consent, gallery, intentional placement, reload and reposition", async ({
   page,
@@ -40,24 +73,38 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   expect(await album.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(
     true,
   );
-  for (const group of stickerGroups) {
-    await album.getByRole("button", { name: group.name, exact: true }).click();
-    const grid = album.getByRole("group", {
-      name: `Figurinhas · ${group.name}`,
-    });
-    await expect(grid.getByRole("button")).toHaveCount(group.ids.length);
-    for (const id of group.ids) {
-      const tile = grid.getByRole("button", {
-        name: stickerNames[id],
-        exact: true,
+  for (const collection of stickerCollections) {
+    await album
+      .getByRole("button", { name: collection.name, exact: true })
+      .click();
+    if (collection.showAll) {
+      await expect(
+        album
+          .getByRole("group", { name: "Figurinhas · Todas" })
+          .getByRole("button"),
+      ).toHaveCount(collection.ids.length);
+    }
+    for (const group of collection.groups) {
+      await album
+        .getByRole("button", { name: group.name, exact: true })
+        .click();
+      const grid = album.getByRole("group", {
+        name: `Figurinhas · ${group.name}`,
       });
-      await expect
-        .poll(() =>
-          tile
-            .locator("img")
-            .evaluate((img: HTMLImageElement) => img.naturalWidth),
-        )
-        .toBe(256);
+      await expect(grid.getByRole("button")).toHaveCount(group.ids.length);
+      for (const id of group.ids) {
+        const tile = grid.getByRole("button", {
+          name: stickers[id].name,
+          exact: true,
+        });
+        await expect
+          .poll(() =>
+            tile
+              .locator("img")
+              .evaluate((img: HTMLImageElement) => img.naturalWidth),
+          )
+          .toBe(256);
+      }
     }
   }
   await expect(
@@ -79,6 +126,17 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await expect(
     page.getByRole("dialog").locator(".album-preview"),
   ).toContainText("Siri do saque");
+  await album.getByRole("button", { name: "Cultura pop", exact: true }).click();
+  await album.getByRole("button", { name: "Música", exact: true }).click();
+  await album
+    .getByRole("button", { name: "DJ do isopor", exact: true })
+    .click();
+  await album.getByRole("button", { name: "Todas", exact: true }).click();
+  await expect(album.locator(".album-preview")).toContainText("DJ do isopor");
+  await album.screenshot({
+    ...capture,
+    path: info.outputPath("cultura-pop.png"),
+  });
   await page.getByRole("button", { name: "Usar esta figurinha" }).click();
   await scene.getByRole("button", { name: "Gazebo", exact: true }).click();
   const zoomIn = scene.getByRole("button", { name: "Aumentar zoom" });
@@ -157,22 +215,34 @@ test("exploration, consent, gallery, intentional placement, reload and repositio
   await expect(own).toBeVisible();
   await expect(own.locator("img")).toHaveAttribute(
     "src",
-    "/beach/stickers/siri.webp",
+    "/beach/stickers/dj-do-isopor.webp",
   );
   const viewport = page.viewportSize()!;
   for (const width of [viewport.width === 390 ? 900 : 390, viewport.width]) {
     await page.setViewportSize({ width, height: viewport.height });
-    const artBox = (await art.boundingBox())!;
-    const placed = (await own.boundingBox())!;
-    expect((placed.x + placed.width / 2 - artBox.x) / artBox.width).toBeCloseTo(
-      saved.x,
-      3,
-    );
-    expect(
-      (placed.y + placed.height / 2 - artBox.y) / artBox.height,
-    ).toBeCloseTo(saved.y, 3);
+    // Read both boxes in the same frame as the mobile viewport reflows.
+    const center = await own.evaluate((button) => {
+      const artBox = button
+        .closest(".beach-stage")!
+        .querySelector(".beach-art")!
+        .getBoundingClientRect();
+      const placed = button.getBoundingClientRect();
+      return {
+        x: (placed.x + placed.width / 2 - artBox.x) / artBox.width,
+        y: (placed.y + placed.height / 2 - artBox.y) / artBox.height,
+      };
+    });
+    expect(center.x).toBeCloseTo(saved.x, 3);
+    expect(center.y).toBeCloseTo(saved.y, 3);
   }
   await scene.getByRole("button", { name: "Editar meu lugar" }).click();
+  await expect(
+    album.getByRole("button", { name: "Música", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(album.locator(".album-preview")).toContainText("DJ do isopor");
+  await album
+    .getByRole("button", { name: "Turma da praia", exact: true })
+    .click();
   await album.getByRole("button", { name: "Praia e mar", exact: true }).click();
   await album.getByRole("button", { name: "De braçada", exact: true }).click();
   await expect(album.locator(".album-preview")).toContainText("De braçada");

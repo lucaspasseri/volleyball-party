@@ -1,80 +1,9 @@
 import { z } from "zod";
 
-export const stickerNames = {
-  levantadora: "Levantadora",
-  foguete: "Foguete da areia",
-  paredao: "Paredão",
-  "salva-vidas": "Salva-vidas",
-  surfista: "Surfista",
-  capivara: "Capivara do sol",
-  siri: "Siri do saque",
-  coco: "Coco gelado",
-  gaivota: "Gaivota da orla",
-  capita: "Capitã da quadra",
-  soneca: "Mestre da soneca",
-  mergulho: "Peixinho",
-  saque: "Saque viagem",
-  cortada: "Cortada no alto",
-  manchete: "Dona da manchete",
-  largadinha: "Largadinha de leve",
-  bloqueio: "Muralha no ar",
-  ponto: "É ponto!",
-  brinde: "Um brinde!",
-  protetor: "Passa o protetor",
-  milho: "Milho da praia",
-  cadeirinha: "Só mais um capítulo",
-  selfie: "Selfie da orla",
-  passinho: "No passinho",
-  tchibum: "Tchibum!",
-  crawl: "De braçada",
-  embaixadinha: "Embaixadinha",
-  calcadao: "Passada no calçadão",
-  cooler: "Chegou o gelo",
-  leque: "Brisa de leque",
-} as const;
+import { stickerIds, type StickerId } from "./stickers";
+
 export type Point = { x: number; y: number };
 export type Rect = { left: number; top: number; width: number; height: number };
-export type StickerId = keyof typeof stickerNames;
-export const stickerIds = Object.keys(stickerNames) as StickerId[];
-
-export const stickerGroups: { name: string; ids: StickerId[] }[] = [
-  {
-    name: "Vôlei",
-    ids: [
-      "levantadora",
-      "foguete",
-      "paredao",
-      "siri",
-      "capita",
-      "mergulho",
-      "saque",
-      "cortada",
-      "manchete",
-      "largadinha",
-      "bloqueio",
-    ],
-  },
-  {
-    name: "Praia e mar",
-    ids: [
-      "salva-vidas",
-      "surfista",
-      "gaivota",
-      "tchibum",
-      "crawl",
-      "embaixadinha",
-      "calcadao",
-    ],
-  },
-  {
-    name: "Sossego",
-    ids: ["soneca", "capivara", "protetor", "milho", "cadeirinha", "leque"],
-  },
-  {
-    name: "Festa",
-    ids: ["ponto", "coco", "brinde", "selfie", "passinho", "cooler"],
-  },
-];
 
 // Trace landmarks on the 1536 × 1024 master. The rest of the app uses fractions.
 const artPoint = ([x, y]: [number, number]): Point => ({
@@ -158,20 +87,6 @@ export const zones = {
   },
 };
 export type ZoneId = keyof typeof zones;
-export const suggestedZones: Partial<Record<StickerId, ZoneId>> = {
-  brinde: "coolers",
-  cooler: "coolers",
-  protetor: "beira-mar",
-  milho: "torcida",
-  cadeirinha: "beira-mar",
-  selfie: "calcadao",
-  passinho: "gazebo",
-  tchibum: "mar",
-  crawl: "mar",
-  embaixadinha: "beira-mar",
-  calcadao: "calcadao",
-  leque: "gazebo",
-};
 export const zoneIds = Object.keys(zones) as ZoneId[];
 export type GroundPosition = Point & { zone_id: ZoneId };
 
@@ -193,6 +108,7 @@ const spriteBottom: Partial<Record<StickerId, number>> = {
   manchete: 236,
   tchibum: 221,
   crawl: 187,
+  "nadador-torpedo": 235,
   embaixadinha: 244,
   leque: 227,
 };
@@ -321,6 +237,3 @@ export const sceneRowsSchema = z.array(
   }),
 );
 export type SceneRow = z.infer<typeof sceneRowsSchema>[number];
-export function stickerSrc(id: StickerId) {
-  return `/beach/stickers/${id}.webp`;
-}

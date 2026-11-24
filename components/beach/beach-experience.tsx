@@ -7,17 +7,14 @@ import { saveBeachSticker } from "@/app/actions/beach";
 import {
   feet,
   placementAt,
-  stickerNames,
-  stickerSrc,
-  suggestedZones,
   suggestSpot,
   zones,
   type Placement,
   type GroundPosition,
   type SceneRow,
-  type StickerId,
   type ZoneId,
 } from "@/lib/beach";
+import { stickers, stickerSrc, type StickerId } from "@/lib/stickers";
 import { SceneViewport, type CameraTarget } from "./scene-viewport";
 
 const Gallery = dynamic(() => import("./sticker-gallery"));
@@ -39,8 +36,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
   const count = rows.filter((r) => r.shared).length;
   const others = rows.filter((row) => !row.mine).map(feet);
   function pick(sticker_id: StickerId) {
-    const zone_id =
-      active ?? own?.zone_id ?? suggestedZones[sticker_id] ?? "quadras";
+    const zone_id = active ?? own?.zone_id ?? stickers[sticker_id].zone;
     const previous = draft ?? own;
     const point = previous
       ? { ...feet(previous), zone_id: previous.zone_id }
@@ -120,7 +116,7 @@ export function BeachExperience({ rows, canEdit, shared, unavailable }: Props) {
             alt=""
           />
           <div>
-            <strong>{stickerNames[draft.sticker_id]}</strong>
+            <strong>{stickers[draft.sticker_id].name}</strong>
             <p>Escolha uma área, toque no mapa ou arraste sua figurinha.</p>
             <small>
               {shared

@@ -23,16 +23,14 @@ import {
   playable,
   scenePoint,
   sole,
-  stickerNames,
-  stickerSrc,
   zoneAt,
   zones,
   type GroundPosition,
   type Placement,
   type Point,
-  type StickerId,
   type ZoneId,
 } from "@/lib/beach";
+import { stickers, stickerSrc, type StickerId } from "@/lib/stickers";
 
 export function stickerStyle(zone: ZoneId, sticker: StickerId): CSSProperties {
   return {
@@ -136,7 +134,7 @@ export function DraftSticker({ draft, stage, others, pending, onMove }: Props) {
         <motion.button
           type="button"
           disabled={pending}
-          aria-label={`Mover ${stickerNames[draft.sticker_id]} com as setas`}
+          aria-label={`Mover ${stickers[draft.sticker_id].name} com as setas`}
           className="draft-sticker"
           animate={{ scale: previewZone && !reduced ? 1.035 : 1 }}
           onPointerDown={(e) => {

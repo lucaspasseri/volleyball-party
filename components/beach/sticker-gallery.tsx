@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Check, X } from "lucide-react";
 import {
-  stickerGroups,
-  stickerNames,
+  stickerCollections,
+  stickers,
   stickerSrc,
   type StickerId,
-} from "@/lib/beach";
+} from "@/lib/stickers";
 
 type Props = {
   initial: StickerId;
@@ -23,8 +23,18 @@ export default function StickerGallery({
   onClose,
 }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const reduced = useReducedMotion();
   const [selected, select] = useState(initial);
-  const group = stickerGroups.find(({ ids }) => ids.includes(selected))!;
+  const [showAll, setShowAll] = useState(false);
+  const collection = stickerCollections.find(({ ids }) =>
+    ids.includes(selected),
+  )!;
+  const filters = collection.showAll
+    ? [{ name: "Todas", ids: collection.ids }, ...collection.groups]
+    : collection.groups;
+  const group = showAll
+    ? filters[0]
+    : collection.groups.find(({ ids }) => ids.includes(selected))!;
   useEffect(() => {
     const el = dialog.current!;
     el.showModal();
@@ -54,14 +64,32 @@ export default function StickerGallery({
             <X />
           </button>
         </header>
-        <div className="album-filters" role="group" aria-label="Atividades">
-          {stickerGroups.map((item) => (
+        <div className="album-collections" role="group" aria-label="Coleções">
+          {stickerCollections.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={item === collection}
+              onClick={() => {
+                if (item === collection) return;
+                select(item.ids[0]);
+                setShowAll(item.showAll);
+              }}
+            >
+              {item.name}
+              <span aria-hidden="true">{item.ids.length}</span>
+            </button>
+          ))}
+        </div>
+        <div className="album-filters" role="group" aria-label="Categorias">
+          {filters.map((item) => (
             <button
               key={item.name}
               type="button"
               aria-pressed={item === group}
               onClick={() => {
-                if (item !== group) select(item.ids[0]);
+                setShowAll(item.ids === collection.ids);
+                if (!item.ids.includes(selected)) select(item.ids[0]);
               }}
             >
               {item.name}
@@ -72,15 +100,16 @@ export default function StickerGallery({
           <div className="album-preview">
             <motion.img
               key={selected}
-              initial={{ scale: 0.88, rotate: -5 }}
+              initial={reduced ? false : { scale: 0.88, rotate: -5 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 310, damping: 16 }}
               src={stickerSrc(selected)}
               alt=""
             />
-            <strong>{stickerNames[selected]}</strong>
+            <strong>{stickers[selected].name}</strong>
           </div>
           <div
+            key={group.name}
             className="album-grid"
             role="group"
             aria-label={`Figurinhas · ${group.name}`}
@@ -89,15 +118,25 @@ export default function StickerGallery({
               <motion.button
                 key={id}
                 type="button"
-                aria-label={stickerNames[id]}
+                aria-label={stickers[id].name}
                 aria-pressed={id === selected}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.94 }}
+                whileHover={reduced ? undefined : { y: -2 }}
+                whileTap={reduced ? undefined : { scale: 0.94 }}
                 onClick={() => select(id)}
               >
-                <img src={stickerSrc(id)} alt="" width="88" height="88" />
+                <img
+                  src={stickerSrc(id)}
+                  alt=""
+                  width="88"
+                  height="88"
+                  loading="lazy"
+                  decoding="async"
+                />
                 {selected === id && (
-                  <motion.span layoutId="album-ring" className="album-ring">
+                  <motion.span
+                    layoutId={reduced ? undefined : "album-ring"}
+                    className="album-ring"
+                  >
                     <Check size={12} />
                   </motion.span>
                 )}
