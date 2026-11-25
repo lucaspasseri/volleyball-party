@@ -14,10 +14,9 @@ export const contributions = [
   "Guarda-sol",
   "Outro",
 ] as const;
-export const attendanceSchema = z.enum(["going", "maybe", "not_going"], {
+const attendanceSchema = z.enum(["going", "maybe", "not_going"], {
   error: "Escolha Vou, Talvez ou Não vou.",
 });
-export type AttendanceStatus = z.infer<typeof attendanceSchema>;
 
 export const rsvpInputSchema = z
   .object({
@@ -77,24 +76,13 @@ export const publicAttendanceSchema = z.object({
   ),
 });
 export type PublicAttendance = z.infer<typeof publicAttendanceSchema>;
-export type AttendanceState = {
-  authenticated: boolean;
-  status: AttendanceStatus | null;
-  canPlaceSticker: boolean;
-};
-
-// Goal 3 must re-read this on the server for every sticker mutation.
-export function deriveAttendanceState(
+export function canPlaceSticker(
   authenticated: boolean,
   rsvp: Pick<SavedRsvp, "attendance_status" | "hidden"> | null,
-): AttendanceState {
-  return {
-    authenticated,
-    status: rsvp?.attendance_status ?? null,
-    canPlaceSticker:
-      authenticated && rsvp?.attendance_status === "going" && !rsvp.hidden,
-  };
+): boolean {
+  return authenticated && rsvp?.attendance_status === "going" && !rsvp.hidden;
 }
+
 export function safeAvatarUrl(value: unknown): string | null {
   if (typeof value !== "string" || value.length > 2048) return null;
   try {
@@ -120,7 +108,6 @@ export type RsvpView = {
   rsvp: SavedRsvp | null;
   profile: z.infer<typeof profileSchema> | null;
   attendance: PublicAttendance | null;
-  attendanceState: AttendanceState;
   inviteRequired: boolean;
   organizer: boolean;
   error?: string;

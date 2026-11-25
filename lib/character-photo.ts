@@ -1,7 +1,7 @@
 import sharp from "sharp";
+import { maxPhotoBytes } from "./characters";
 import { safeAvatarUrl } from "./rsvp";
 
-export const maxPhotoBytes = 5 * 1024 * 1024;
 const formats: Record<string, string> = {
   "image/jpeg": "jpeg",
   "image/png": "png",

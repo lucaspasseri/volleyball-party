@@ -36,6 +36,7 @@ import {
   type SceneRow,
   type ZoneId,
 } from "@/lib/beach";
+import { artPoint, beachArt, beachAspect } from "@/lib/beach-art";
 import { sceneSticker } from "@/lib/characters";
 import { StickerArt } from "./sticker-art";
 import foreground from "@/lib/beach-foreground.json";
@@ -259,16 +260,13 @@ export function SceneViewport({
                 aria-hidden="true"
                 className="beach-foreground"
                 style={{
-                  left: (x / 1536) * 100 + "%",
-                  top: (y / 1024) * 100 + "%",
-                  width: (w / 1536) * 100 + "%",
-                  height: (h / 1024) * 100 + "%",
+                  left: (x / beachArt.width) * 100 + "%",
+                  top: (y / beachArt.height) * 100 + "%",
+                  width: (w / beachArt.width) * 100 + "%",
+                  height: (h / beachArt.height) * 100 + "%",
                   backgroundSize: `${(foreground.width / w) * 100}% ${(foreground.height / h) * 100}%`,
                   backgroundPosition: `0 ${(top / (foreground.height - h)) * 100}%`,
-                  zIndex: depthOrder({
-                    x: contact[0] / 1536,
-                    y: contact[1] / 1024,
-                  }),
+                  zIndex: depthOrder(artPoint(contact[0], contact[1])),
                 }}
               />
             ))}
@@ -308,7 +306,7 @@ export function SceneViewport({
                 left: guest.x * 100 + "%",
                 top:
                   (feet(guest).y -
-                    1.5 *
+                    beachAspect *
                       stickerWidth(feet(guest), guest.sticker_id) *
                       stickerProfile(guest.sticker_id).anchor.y) *
                     100 +

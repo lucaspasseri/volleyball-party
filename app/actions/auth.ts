@@ -1,6 +1,7 @@
 "use server";
 
-import { auth, siteOrigin } from "@/lib/auth/server";
+import { auth } from "@/lib/auth/server";
+import { siteOrigin } from "@/lib/site-origin";
 import { revalidatePath } from "next/cache";
 
 export async function signInWithGoogle(): Promise<{

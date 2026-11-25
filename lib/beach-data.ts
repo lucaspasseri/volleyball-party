@@ -1,5 +1,6 @@
 import "server-only";
 import { photoSchema, type Photo } from "./characters";
+import { canPlaceSticker } from "./rsvp";
 import { getRsvpView } from "@/lib/rsvp-data";
 import { getGuest } from "@/lib/auth/server";
 import { queryValue } from "@/lib/db";
@@ -34,7 +35,7 @@ export async function getBeachView() {
     photo,
     hasProfilePhoto: Boolean(view.user?.avatarUrl),
     unavailable,
-    canEdit: view.attendanceState.canPlaceSticker && !unavailable,
+    canEdit: canPlaceSticker(Boolean(view.user), view.rsvp) && !unavailable,
     shared: view.rsvp?.public_visibility_consent ?? false,
     identity: view.rsvp?.id ?? "visitor",
   };

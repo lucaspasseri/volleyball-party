@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { getGuest, siteOrigin } from "@/lib/auth/server";
+import { getGuest } from "@/lib/auth/server";
+import { siteOrigin } from "@/lib/site-origin";
 
 export async function GET(request: NextRequest) {
   let destination = "/?auth=error#presenca";

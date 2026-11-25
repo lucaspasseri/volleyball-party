@@ -67,26 +67,14 @@ export function SunDoodle({ className = "" }: { className?: string }) {
   );
 }
 
-export function BeachScene({
-  variant = "hero",
-  className = "",
-}: {
-  variant?: "hero" | "preview";
-  className?: string;
-}) {
+export function BeachScene() {
   const id = useId().replace(/:/g, "");
-  const preview = variant === "preview";
   return (
     <svg
       viewBox="0 0 800 670"
       fill="none"
-      className={className}
       role="img"
-      aria-label={
-        preview
-          ? "Ilustração conceitual da praia com quadras, guarda-sol e espaço para a turma"
-          : "Praia ilustrada de Copacabana com montanhas, sol, rede de vôlei e guarda-sol"
-      }
+      aria-label="Praia ilustrada de Copacabana com montanhas, sol, rede de vôlei e guarda-sol"
     >
       <defs>
         <clipPath id={`scene-${id}`}>
@@ -216,13 +204,6 @@ export function BeachScene({
           <path d="M0 8H60" stroke="#FFF8E9" strokeWidth="9" />
           <path d="M20-4V-10H40V-4" stroke="#163D55" strokeWidth="3" />
         </g>
-        {preview && (
-          <g fill="#E5B86B" opacity=".6">
-            <ellipse cx="459" cy="560" rx="19" ry="7" />
-            <ellipse cx="520" cy="512" rx="19" ry="7" />
-            <ellipse cx="329" cy="493" rx="19" ry="7" />
-          </g>
-        )}
       </g>
       <path
         d="M633 47Q695 53 721 88M644 31Q709 37 740 79"

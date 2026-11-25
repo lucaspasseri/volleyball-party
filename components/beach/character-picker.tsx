@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Camera, Check, SlidersHorizontal, Upload } from "lucide-react";
 import {
   characterIds,
+  maxPhotoBytes,
   defaultFace,
   template,
   type Photo,
@@ -57,7 +58,7 @@ export default function CharacterPicker({
     upload?: File,
   ) {
     if (busy) return;
-    if (upload && upload.size > 5 * 1024 * 1024) {
+    if (upload && upload.size > maxPhotoBytes) {
       setMessage("Escolha uma imagem de até 5 MB.");
       return;
     }

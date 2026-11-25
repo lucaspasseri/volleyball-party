@@ -36,7 +36,6 @@ export const event = {
     shade: "Pretendo levar um gazebo e uns coolers para nossa hidratação.",
     bring:
       "Traga suas roupas de praia, não esqueça de passar o protetor solar e aproveite o dia de praia!",
-    expectations: "Escolha seu lugar nessa bagunça!",
   },
 } as const;
 

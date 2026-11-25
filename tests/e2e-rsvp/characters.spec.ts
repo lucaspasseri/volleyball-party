@@ -180,3 +180,29 @@ test("two guests customize, publish, revisit and withdraw their characters from 
     await second.close();
   }
 });
+
+test("a private RSVP explains portrait visibility and restores the character for its owner", async ({
+  page,
+  request,
+}) => {
+  await request.post(mock + "/__reset");
+  await page.goto("/#presenca");
+  await page.getByRole("button", { name: "Continuar com Google" }).click();
+  await page.getByRole("button", { name: "Salvar minha resposta" }).click();
+  await page.getByRole("button", { name: "Escolher figurinha" }).click();
+  await page.getByRole("button", { name: "Meu personagem", exact: true }).click();
+  const album = page.getByRole("dialog");
+  await album.locator("input[type=file]").setInputFiles("tests/fixtures/portraits/sol.jpg");
+  await album.getByRole("button", { name: "Adicionar ao cenário" }).click();
+  const save = page.getByRole("button", { name: "Guardar lugar" });
+  await expect(save).toBeDisabled();
+  await page.getByRole("checkbox", { name: /Só eu vejo meu personagem/ }).check();
+  await save.click();
+  await expect(page.locator(".beach-feedback")).toHaveText("Lugar guardado!");
+  await page.reload();
+  const portrait = page.locator(".placed-sticker .character-art image").first();
+  await expect(portrait).toHaveAttribute("href", /^\/api\/character-photo\//);
+  const path = (await portrait.getAttribute("href"))!;
+  expect((await page.request.get(path)).status()).toBe(200);
+  expect((await request.get(origin + path)).status()).toBe(404);
+});

@@ -43,13 +43,16 @@ export default function StickerGallery({
 }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
   const reduced = useReducedMotion();
-  const [personal, setPersonal] = useState(isCharacter(initial));
+  const [mode, setMode] = useState<"personal" | "collection" | "all">(
+    isCharacter(initial) ? "personal" : "collection",
+  );
+  const personal = mode === "personal";
+  const browseAll = mode === "all";
   const [currentPhoto, setCurrentPhoto] = useState(photo);
   const [selected, select] = useState<StickerId>(
     isCharacter(initial) ? "levantadora" : initial,
   );
   const [showAll, setShowAll] = useState(false);
-  const [browseAll, setBrowseAll] = useState(false);
   const collection = stickerCollections.find(({ ids }) =>
     ids.includes(selected),
   )!;
@@ -103,17 +106,14 @@ export default function StickerGallery({
           <button
             type="button"
             aria-pressed={!personal && browseAll}
-            onClick={() => {
-              setBrowseAll(true);
-              setPersonal(false);
-            }}
+            onClick={() => setMode("all")}
           >
             Todos
           </button>
           <button
             type="button"
             aria-pressed={personal}
-            onClick={() => setPersonal(true)}
+            onClick={() => setMode("personal")}
           >
             Meu personagem <span aria-hidden="true">{characterIds.length}</span>
           </button>
@@ -125,8 +125,7 @@ export default function StickerGallery({
                 !personal && !browseAll && item.id === collection.id
               }
               onClick={() => {
-                setPersonal(false);
-                setBrowseAll(false);
+                setMode("collection");
                 if (item.id === collection.id && !browseAll) return;
                 select(item.ids[0]);
                 setShowAll(item.showAll);

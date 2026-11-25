@@ -13,10 +13,6 @@ export const auth =
       })
     : null;
 
-export function siteOrigin() {
-  return new URL(process.env.SITE_URL || "http://localhost:3000").origin;
-}
-
 export const getGuest = cache(async () => {
   if (!auth) return null;
   // Read the live session even when a signed cache cookie is still present.

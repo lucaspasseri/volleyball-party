@@ -1,6 +1,6 @@
 # RSVP e lista de convidados
 
-O Google autentica o convidado via Managed Better Auth. O SDK da Neon processa o retorno do OAuth, cria os cookies e verifica a sessão nas operações do servidor. O aplicativo usa o ID autenticado para vincular o perfil, a resposta e a figurinha da praia. A configuração da Neon está no [README](../README.md#configuração-do-neon).
+O Google autentica o convidado via Managed Better Auth. O SDK da Neon processa o retorno do OAuth, cria os cookies e verifica a sessão nas operações do servidor. O aplicativo usa o ID autenticado para vincular o perfil, a resposta e a figurinha da praia. A configuração da Neon está no [README](../README.md#guest-accounts-and-database).
 
 ## Acesso do organizador
 

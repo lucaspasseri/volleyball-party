@@ -3,6 +3,8 @@ import type { ZoneId } from "./beach";
 import art from "./character-art.json";
 import { stickers, stickerIds, type StickerId } from "./stickers";
 
+export const maxPhotoBytes = 5 * 1024 * 1024;
+
 type Body = keyof typeof art;
 export type CharacterId = `meu-${Body}`;
 export type SceneStickerId = StickerId | CharacterId;
@@ -23,7 +25,6 @@ function makeTemplate(id: CharacterId) {
     intrinsicWidth: 256,
     intrinsicHeight: 256,
     zone: entry.zone as ZoneId,
-    mask: "alpha" as const,
   };
 }
 const bodies = Object.fromEntries(

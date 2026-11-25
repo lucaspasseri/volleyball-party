@@ -8,6 +8,7 @@ import {
   zoneAt,
   type GroundPosition,
 } from "../../lib/beach";
+import { artPoint } from "../../lib/beach-art";
 import { stickerIds, stickers, type StickerId } from "../../lib/stickers";
 import { Pool } from "pg";
 import { basename, isAbsolute } from "node:path";
@@ -108,7 +109,7 @@ async function populateBeach(composition: boolean | "crowded" | "perspective") {
       ["siri", 171, 558], ["goku", 729, 517],
     ];
     for (const [sticker, x, y] of cast) {
-      const point = { x: x / 1536, y: y / 1024 };
+      const point = artPoint(x, y);
       guests.push({ name: `Praia ${guests.length + 1}`, sticker,
         spot: { ...point, zone_id: zoneAt(point) } });
     }

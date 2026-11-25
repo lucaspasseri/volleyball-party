@@ -2,12 +2,18 @@ import { PartyPopper } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { Volleyball } from "@/components/illustrations/beach";
 import { getRsvpView } from "@/lib/rsvp-data";
+import { AttendanceList } from "@/components/ui/attendance-list";
 import { RsvpExperience } from "@/components/ui/rsvp-experience";
 import { Suspense } from "react";
 
 async function RsvpForm({ authNotice }: { authNotice?: string }) {
-  const view = await getRsvpView();
-  return <RsvpExperience view={view} authNotice={authNotice} />;
+  const { attendance, ...view } = await getRsvpView();
+  return (
+    <>
+      <RsvpExperience view={view} authNotice={authNotice} />
+      <AttendanceList attendance={attendance} configured={view.configured} />
+    </>
+  );
 }
 
 export function Rsvp({ authNotice }: { authNotice?: string }) {

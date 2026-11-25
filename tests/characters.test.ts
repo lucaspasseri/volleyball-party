@@ -4,6 +4,7 @@ import { test } from "node:test";
 import sharp from "sharp";
 import {
   characterIds,
+  maxPhotoBytes,
   defaultFace,
   faceSchema,
   photoFrame,
@@ -21,7 +22,6 @@ import { stickerProfile, stickerWidth } from "../lib/beach-perspective";
 import {
   importProfilePhoto,
   normalizePhoto,
-  maxPhotoBytes,
 } from "../lib/character-photo";
 
 const character = {

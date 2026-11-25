@@ -162,7 +162,3 @@ A composição de referência usa 20 posicionamentos fixos no mapa real, com a m
 | Celular | [Antes](../screenshots/perspective/mobile-before.webp) | [Depois](../screenshots/perspective/mobile-after.webp) | [78 convidados](../screenshots/perspective/mobile-crowded.webp) |
 
 Nas capturas comparáveis, a largura da caixa da capitã corresponde a 6,6% da arte junto à água, 10,0% na quadra e 21,0% no calçadão. A figura ao fundo fica próxima da escala das famílias na areia molhada. Na quadra esquerda, os fios deixam ver o rosto e a camisa do atacante pelo vão da malha. À direita, a tampa do cooler passa diante da convidada que brinda. No primeiro plano, o músico de pernas cruzadas repousa no banco, a convidada com milho ocupa a cadeira e o caminhante de chapéu encobre parte da cadeira de Roshi. No celular, o zoom facilita a seleção dos convidados distantes na composição cheia.
-
-## Verificação da entrega
-
-Passaram os 32 testes unitários, as verificações SQL em PostgreSQL descartável, a checagem TypeScript e o build otimizado. No Playwright, passaram 20 cenários de RSVP e praia em desenvolvimento, 13 da página inicial e oito da praia com o servidor de produção local. O cenário de navegação pelo menu móvel roda apenas no projeto móvel. O projeto não define um comando de lint.

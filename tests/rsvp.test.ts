@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { persistRsvp, type MutationDependencies } from "../lib/rsvp-mutation";
 import {
-  deriveAttendanceState,
+  canPlaceSticker,
   rsvpInputSchema,
   safeAvatarUrl,
   type RsvpInput,
@@ -160,16 +160,16 @@ test("rate limits and invite errors produce friendly Portuguese feedback", async
     assert.match(result.message, expected);
   }
 });
-test("only authenticated, confirmed, unhidden guests qualify for Goal 3", () => {
-  assert.equal(deriveAttendanceState(true, saved).canPlaceSticker, true);
-  for (const state of [
-    deriveAttendanceState(false, saved),
-    deriveAttendanceState(true, null),
-    deriveAttendanceState(true, { ...saved, hidden: true }),
-    deriveAttendanceState(true, { ...saved, attendance_status: "maybe" }),
-    deriveAttendanceState(true, { ...saved, attendance_status: "not_going" }),
+test("only authenticated, confirmed, unhidden guests can save a beach sticker", () => {
+  assert.equal(canPlaceSticker(true, saved), true);
+  for (const eligible of [
+    canPlaceSticker(false, saved),
+    canPlaceSticker(true, null),
+    canPlaceSticker(true, { ...saved, hidden: true }),
+    canPlaceSticker(true, { ...saved, attendance_status: "maybe" }),
+    canPlaceSticker(true, { ...saved, attendance_status: "not_going" }),
   ])
-    assert.equal(state.canPlaceSticker, false);
+    assert.equal(eligible, false);
 });
 test("avatar URLs are restricted to HTTPS Google image hosts without credentials", () => {
   assert.equal(

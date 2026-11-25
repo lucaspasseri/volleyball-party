@@ -8,7 +8,7 @@ export const tributeCollections = {
   games: "Games",
 } as const;
 
-export type TributeCollection = keyof typeof tributeCollections;
+type TributeCollection = keyof typeof tributeCollections;
 type Tribute = {
   name: string;
   category: TributeCollection;
@@ -160,7 +160,7 @@ export const tributes = {
   },
 } as const satisfies Record<string, Tribute>;
 
-export type TributeId = keyof typeof tributes;
+type TributeId = keyof typeof tributes;
 export const tributeIds = Object.keys(tributes) as TributeId[];
 export function isTribute(id: string): id is TributeId {
   return Object.hasOwn(tributes, id);

@@ -36,7 +36,7 @@ A migração 005 cria `pesca.character_photos` e estende `sticker_placements` co
 
 O ambiente usa as mesmas quatro variáveis do convite, a origem exata de `SITE_URL` e o callback Google já registrado no Neon. O processamento da imagem exige o runtime Node.js com o pacote Sharp da plataforma. O PostgreSQL armazena a imagem. A hospedagem precisa encaminhar o corpo do upload e a resposta privada sem cache. O fluxo não requer bucket, chave de IA ou mudança de escopo OAuth.
 
-Use `npm run db:migrate:dev` na branch de desenvolvimento e `npm run db:migrate:production` para o destino de produção. O executor verifica o destino e o histórico dentro de uma transação. O álbum faz parte da página principal servida por `npm run dev` e pela combinação `npm run build` e `npm start`. [Configuração e publicação](../README.md#migrações-e-publicação)
+Use `npm run db:migrate:dev` na branch de desenvolvimento e `npm run db:migrate:production` para o destino de produção. O executor verifica o destino e o histórico dentro de uma transação. O álbum faz parte da página principal servida por `npm run dev` e pela combinação `npm run build` e `npm start`. [Configuração e publicação](../README.md#migrations-and-deployment)
 
 ## Verificação
 

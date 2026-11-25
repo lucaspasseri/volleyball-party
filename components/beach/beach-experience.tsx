@@ -139,8 +139,9 @@ export function BeachExperience({
                   checked={confirmed}
                   onChange={(e) => setConfirmed(e.target.checked)}
                 />
-                Ao adicionar seu personagem ao cenário, sua foto ficará visível
-                para os outros convidados.
+                {shared
+                  ? "Ao adicionar seu personagem ao cenário, sua foto ficará visível para os outros convidados."
+                  : "Quero usar minha foto no cenário. Só eu vejo meu personagem enquanto minha presença for privada."}
               </label>
             )}
             <small>

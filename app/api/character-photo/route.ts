@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { z } from "zod";
-import { getGuest, siteOrigin } from "@/lib/auth/server";
+import { getGuest } from "@/lib/auth/server";
+import { siteOrigin } from "@/lib/site-origin";
 import { queryValue } from "@/lib/db";
 import {
   importProfilePhoto,

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { auth, getGuest } from "@/lib/auth/server";
 import { databaseConfigured, queryValue } from "@/lib/db";
 import {
-  deriveAttendanceState,
   profileSchema,
   publicAttendanceSchema,
   safeAvatarUrl,
@@ -24,7 +23,6 @@ export const getRsvpView = cache(async (): Promise<RsvpView> => {
     rsvp: null,
     profile: null,
     attendance: null,
-    attendanceState: deriveAttendanceState(false, null),
     inviteRequired: false,
     organizer: false,
   };
@@ -50,7 +48,6 @@ export const getRsvpView = cache(async (): Promise<RsvpView> => {
       view.rsvp = guest?.rsvp ?? null;
       view.profile = guest?.profile ?? null;
       view.organizer = organizer === true;
-      view.attendanceState = deriveAttendanceState(true, view.rsvp);
     }
   } catch {
     view.error =

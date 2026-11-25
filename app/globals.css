@@ -901,17 +901,6 @@ h3 {
 .form-heading .eyebrow {
   font-size: 0.62rem;
 }
-.preview-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 9px;
-  border: 1px solid #173e524d;
-  border-radius: 3px;
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
 .rsvp-form h3 {
   margin-block: 21px 10px;
   font-size: 2.35rem;
@@ -948,31 +937,6 @@ h3 {
   color: #647276;
   opacity: 1;
 }
-.form-attendance {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.71rem;
-  margin-bottom: 22px;
-}
-.form-attendance > svg {
-  border: 1px solid #173e5266;
-  border-radius: 3px;
-  padding: 2px;
-  color: var(--muted);
-}
-.button-disabled {
-  width: 100%;
-  background: #dcdccf;
-  color: #53666b;
-  border: 1px solid #b7bcae;
-  font-size: 0.78rem;
-  box-shadow: none;
-}
-.button-disabled:hover {
-  box-shadow: none;
-  transform: none;
-}
 .rsvp-form .form-footnote {
   font-size: 0.62rem;
   text-align: center;
@@ -981,89 +945,6 @@ h3 {
 .expectations {
   background: var(--cream);
   padding-bottom: 65px;
-}
-.expectations-heading {
-  text-align: center;
-}
-.expectations-heading h2 {
-  font-size: clamp(3.8rem, 7vw, 6.5rem);
-  margin-block: 18px;
-}
-.expectations-heading h2 > span {
-  display: inline-block;
-  font-size: 2.4rem;
-  vertical-align: top;
-  margin-left: 10px;
-  transform: rotate(15deg);
-}
-.expectations-heading .section-lead {
-  font-size: 1.15rem;
-  font-weight: 450;
-}
-.expectations-scene {
-  position: relative;
-  margin: 45px auto 0;
-  max-width: 950px;
-  background: #f4e7c4;
-  border: 1.5px solid #173e524d;
-  border-radius: 8px;
-  overflow: hidden;
-  min-height: 420px;
-}
-.expectations-scene > .scene-label {
-  position: absolute;
-  top: 22px;
-  left: 25px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 0.6rem;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-}
-.expectations-scene > svg {
-  width: 100%;
-  height: 440px;
-  object-fit: contain;
-  margin-top: -20px;
-  transform: scale(1.25);
-  opacity: 0.8;
-}
-.scene-caption {
-  position: relative;
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 20px 26px;
-  background: var(--cream);
-  border-top: 1px solid #173e5233;
-}
-.scene-caption > svg {
-  color: var(--teal);
-  flex-shrink: 0;
-}
-.scene-caption > p {
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-.scene-caption > p > span {
-  display: block;
-  color: var(--muted);
-  font-size: 0.73rem;
-  font-weight: 400;
-}
-.scene-caption > .preview-badge {
-  margin-left: auto;
-}
-.scene-handwriting {
-  position: absolute;
-  right: 55px;
-  top: 90px;
-  font:
-    italic 1.3rem Georgia,
-    serif;
-  transform: rotate(8deg);
 }
 .closing-note {
   text-align: center;
@@ -1482,38 +1363,11 @@ h3 {
   .form-heading .eyebrow {
     font-size: 0.5rem;
   }
-  .preview-badge {
-    font-size: 0.48rem;
-    padding: 5px 6px;
-  }
   .rsvp-form h3 {
     font-size: 2rem;
   }
   .rsvp-form > p {
     font-size: 0.67rem;
-  }
-  .form-attendance {
-    font-size: 0.62rem;
-  }
-  .button-disabled {
-    font-size: 0.68rem;
-    padding-inline: 10px;
-    gap: 8px;
-  }
-  .scene-caption {
-    gap: 10px;
-    padding: 18px;
-  }
-  .scene-caption > p {
-    font-size: 0.75rem;
-  }
-  .scene-caption > p > span {
-    font-size: 0.64rem;
-  }
-  .scene-handwriting {
-    right: 30px;
-    top: 80px;
-    font-size: 1rem;
   }
   .footer {
     flex-wrap: wrap;
@@ -1910,9 +1764,6 @@ h3 {
   .form-heading .eyebrow {
     font-size: 0.58rem;
   }
-  .preview-badge {
-    font-size: 0.53rem;
-  }
   .rsvp-form h3 {
     font-size: 2.4rem;
   }
@@ -1925,71 +1776,8 @@ h3 {
   .rsvp-form input {
     font-size: 0.85rem;
   }
-  .form-attendance {
-    font-size: 0.73rem;
-  }
-  .button-disabled {
-    font-size: 0.8rem;
-  }
   .rsvp-form .form-footnote {
     font-size: 0.66rem;
-  }
-  .expectations-heading .eyebrow {
-    font-size: 0.58rem;
-  }
-  .expectations-heading h2 {
-    font-size: 3.7rem;
-    letter-spacing: -0.03em;
-    margin-block: 16px;
-  }
-  .expectations-heading h2 > span {
-    font-size: 1.6rem;
-    margin-left: 7px;
-  }
-  .expectations-heading .section-lead {
-    font-size: 1rem;
-  }
-  .expectations-scene {
-    margin-top: 30px;
-    min-height: 0;
-  }
-  .expectations-scene > .scene-label {
-    font-size: 0.48rem;
-    left: 13px;
-    top: 15px;
-    gap: 6px;
-  }
-  .expectations-scene > svg {
-    height: 310px;
-    margin-top: 0;
-    transform: scale(1.25);
-    max-width: none;
-  }
-  .scene-handwriting {
-    right: 16px;
-    top: 53px;
-    font-size: 0.85rem;
-  }
-  .scene-caption {
-    flex-wrap: wrap;
-    padding: 17px 14px;
-    gap: 10px;
-  }
-  .scene-caption > svg {
-    width: 20px;
-  }
-  .scene-caption > p {
-    font-size: 0.79rem;
-    flex: 1;
-  }
-  .scene-caption > p > span {
-    font-size: 0.72rem;
-    line-height: 1.6;
-    margin-top: 4px;
-  }
-  .scene-caption > .preview-badge {
-    margin-left: 30px;
-    margin-top: 3px;
   }
   .closing-note {
     margin-top: 45px;
@@ -2058,9 +1846,6 @@ h3 {
     right: 8px;
     top: 42px;
   }
-  .expectations-heading h2 {
-    font-size: 3.25rem;
-  }
   .rsvp-copy h2 {
     font-size: 4.5rem;
   }
@@ -2072,7 +1857,6 @@ h3 {
 .where-copy .eyebrow,
 .how-heading .eyebrow,
 .rsvp-copy .eyebrow,
-.expectations-heading .eyebrow,
 .weather-heading .eyebrow,
 .map-top .eyebrow,
 .form-heading .eyebrow {
@@ -2084,8 +1868,7 @@ h3 {
 .when-copy .button,
 .where-copy .button,
 .hero-actions .button,
-.hero-actions .text-link,
-.button-disabled {
+.hero-actions .text-link {
   font-size: 0.875rem;
 }
 .hero-description,
@@ -2106,9 +1889,7 @@ h3 {
 .weather-label,
 .weather-value > div,
 .packing-note,
-.rsvp-form label,
-.form-attendance,
-.scene-caption > p > span {
+.rsvp-form label {
   font-size: 0.875rem;
 }
 .activity-note {
@@ -2133,9 +1914,7 @@ h3 {
 .timezone-note,
 .weather-source,
 .calendar-footer,
-.preview-badge,
 .rsvp-form .form-footnote,
-.expectations-scene > .scene-label,
 .hero-bottom,
 .footer > p,
 .footer > span {
@@ -2156,15 +1935,6 @@ h3 {
 }
 .weather-value {
   flex-wrap: wrap;
-}
-.scene-caption {
-  flex-wrap: wrap;
-}
-.scene-caption > .preview-badge {
-  margin-left: 38px;
-}
-.scene-label {
-  max-width: calc(100% - 30px);
 }
 .footer {
   font-size: 0.75rem;
@@ -2244,15 +2014,6 @@ h3 {
   .rsvp-ball {
     width: 55px;
     bottom: 0;
-  }
-  .scene-caption > p {
-    font-size: 0.875rem;
-  }
-  .scene-caption > p > span {
-    font-size: 0.875rem;
-  }
-  .scene-handwriting {
-    top: 75px;
   }
   .footer > p,
   .footer > span {

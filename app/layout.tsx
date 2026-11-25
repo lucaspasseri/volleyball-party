@@ -6,15 +6,10 @@ import "@fontsource/barlow-condensed/800.css";
 import "./globals.css";
 import { MotionProvider } from "@/components/motion/reveal";
 import { compactDate, dateLabel, event, startHour } from "@/lib/event";
-
-const siteUrl =
-  process.env.SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
+import { siteOrigin } from "@/lib/site-origin";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(siteOrigin()),
   title: `${event.name} — ${event.age} verões, uma festa na areia`,
   description: `Você foi convidado! Dia ${dateLabel}, às ${startHour}, na ${event.location.beach}. Vôlei, sol e gente querida para comemorar os ${event.age} do Pesca.`,
   applicationName: "Vôlei do Pesca",

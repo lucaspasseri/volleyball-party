@@ -1,3 +1,4 @@
+import { beachArt } from "./beach-art";
 import type { Point } from "./beach";
 import { isCharacter, template, type SceneStickerId } from "./characters";
 import type { StickerId } from "./stickers";
@@ -15,7 +16,7 @@ const depthLines = [
 export const perspectiveLimits = { min: 0.03, max: 0.212 };
 export function beachDepth({ x, y }: Point) {
   const height = (row: (typeof depthLines)[number]) =>
-    (row.left + (row.right - row.left) * x) / 1024;
+    (row.left + (row.right - row.left) * x) / beachArt.height;
   for (let i = 1; i < depthLines.length; i++) {
     const far = height(depthLines[i - 1]);
     const near = height(depthLines[i]);
@@ -166,8 +167,8 @@ export function stickerProfile(id: SceneStickerId) {
 
 // The canopy shades a trapezoid. Feather the boundary over roughly half a step.
 export function canopyShade({ x, y }: Point) {
-  const px = x * 1536,
-    py = y * 1024;
+  const px = x * beachArt.width,
+    py = y * beachArt.height;
   const back = 345 + (px - 1100) * 0.045;
   const front = 410 + (px - 1100) * 0.085;
   const inside = Math.min(px - 1100, 1474 - px, py - back, front - py);

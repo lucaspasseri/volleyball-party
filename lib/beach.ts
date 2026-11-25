@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { artPoint, beachAspect } from "./beach-art";
 import { stickerProfile, stickerWidth } from "./beach-perspective";
 import {
   characterSchema,
@@ -9,14 +10,10 @@ import {
 } from "./characters";
 
 export type Point = { x: number; y: number };
-export type Rect = { left: number; top: number; width: number; height: number };
+type Rect = { left: number; top: number; width: number; height: number };
 
-// Trace landmarks on the 1536 × 1024 master. The rest of the app uses fractions.
-const artPoint = ([x, y]: [number, number]): Point => ({
-  x: x / 1536,
-  y: y / 1024,
-});
-const path = (...points: [number, number][]) => points.map(artPoint);
+const path = (...points: [number, number][]) =>
+  points.map(([x, y]) => artPoint(x, y));
 export const zones = {
   quadras: {
     name: "Quadras",
@@ -97,7 +94,7 @@ export const zoneIds = Object.keys(zones) as ZoneId[];
 export type GroundPosition = Point & { zone_id: ZoneId };
 
 // The historical database contract stores the center of the transparent square.
-export const inset = { x: 0.03, y: 0.045 };
+const inset = { x: 0.03, y: 0.045 };
 const clamp = (n: number, min: number, max: number) =>
   Math.min(max, Math.max(min, n));
 export function scenePoint(client: Point, rect: Rect): Point {
@@ -123,7 +120,7 @@ function legacySole(id: StickerId) {
   return (spriteBottom[id] ?? 248) / 256;
 }
 function centerOffset(zone: ZoneId, sticker: StickerId) {
-  return zones[zone].legacyWidth * 1.5 * (legacySole(sticker) - 0.5);
+  return zones[zone].legacyWidth * beachAspect * (legacySole(sticker) - 0.5);
 }
 export function feet(p: Placement): Point {
   return { x: p.x, y: p.y + centerOffset(p.zone_id, p.sticker_id) };
@@ -177,7 +174,7 @@ export function zoneAt(p: Point): ZoneId {
   );
 }
 function distance(a: Point, b: Point) {
-  return Math.hypot((a.x - b.x) * 1.5, a.y - b.y);
+  return Math.hypot((a.x - b.x) * beachAspect, a.y - b.y);
 }
 function spacing(point: Point, sticker?: StickerId) {
   return sticker ? Math.max(0.063, stickerWidth(point, sticker) * 0.87) : 0.063;
@@ -231,7 +228,7 @@ export function suggestSpot(
       for (let i = 0; i < 12; i++) {
         const angle = (i * Math.PI) / 6;
         const point = playable({
-          x: origin.x + (Math.cos(angle) * radius) / 1.5,
+          x: origin.x + (Math.cos(angle) * radius) / beachAspect,
           y: origin.y + Math.sin(angle) * radius,
         });
         const zone = zoneAt(point);

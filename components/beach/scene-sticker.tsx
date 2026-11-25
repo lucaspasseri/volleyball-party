@@ -39,6 +39,7 @@ import {
   sceneSticker,
   type SceneStickerId as StickerId,
 } from "@/lib/characters";
+import { beachArt } from "@/lib/beach-art";
 import { StickerArt } from "./sticker-art";
 
 const percent = (fraction: number) => fraction * 100 + "%";
@@ -66,7 +67,7 @@ function profileStyle(id: StickerId): CSSProperties {
 function waterMask(point: Point, id: StickerId) {
   const { pose, anchor } = stickerProfile(id);
   if (pose !== "swimming") return "none";
-  const shoreline = (305 - 175 * point.x) / 1024;
+  const shoreline = (305 - 175 * point.x) / beachArt.height;
   // Let a swimmer emerge gradually over the last strip of wet sand.
   const edge = anchor.y + 0.06 + Math.max(0, point.y - shoreline) * 16;
   return `linear-gradient(black ${percent(edge - 0.025)}, transparent ${percent(edge + 0.025)})`;
